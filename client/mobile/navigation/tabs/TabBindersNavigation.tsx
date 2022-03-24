@@ -16,7 +16,7 @@ export const BindersStack = createNativeStackNavigator();
 
 export const TabBindersNavigation = () => {
   return (
-    <BindersStack.Navigator >
+    <BindersStack.Navigator screenOptions={{headerShown:false} }>
       <BindersStack.Screen name={'Binders Home'} component={BinderScreen}/>
       <BindersStack.Screen name={'Create Medication'} component={MedicationCreateEditScreen}/>
       <BindersStack.Screen name={'Selected Medication'} component={MedicationSelectedScreen} options={{title:'selected medication'}}/>

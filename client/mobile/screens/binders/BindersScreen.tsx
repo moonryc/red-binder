@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { ScrollView } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 import { BinderItem } from '../../components/list-items/BinderItem';
 
 const binders=['John','George', 'Ringo', 'Paul'];
@@ -16,14 +16,15 @@ export const BinderScreen = ({navigation}:any) => {
 
 
   return (
-    <ScrollView>
+    <SafeAreaView>
+      <ScrollView>
 
-      {binders.map((person,index)=>{
-        return(<BinderItem key={index} binderOwner={person} onPress={selectBinder}/>);
-      })}
+        {binders.map((person,index)=>{
+          return(<BinderItem key={index} binderOwner={person} onPress={selectBinder}/>);
+        })}
 
-    </ScrollView>
-
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
