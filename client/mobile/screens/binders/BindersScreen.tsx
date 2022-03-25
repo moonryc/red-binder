@@ -17,7 +17,7 @@ export const BinderScreen = ({navigation}:any) => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView style={{height:'100%'}}>
 
         {binders.map((person,index)=>{
           return(<BinderItem key={index} binderOwner={person} onPress={selectBinder}/>);

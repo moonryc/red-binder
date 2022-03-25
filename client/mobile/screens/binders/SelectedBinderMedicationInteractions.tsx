@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { Text, View } from 'react-native';
+import { SafeAreaView, ScrollView } from 'react-native';
 
 export const SelectedBinderMedicationInteractions = () => {
   return (
-    <Text>
+    <SafeAreaView>
+      <ScrollView style={{height:'100%'}}>
 
-    </Text>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
