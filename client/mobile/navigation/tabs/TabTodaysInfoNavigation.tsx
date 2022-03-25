@@ -1,26 +1,19 @@
 import React from 'react';
-
-import { StyleSheet, Text, View } from 'react-native';
+import { TodaysInfoScreen } from '../../screens';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export const TodaysInfoStack = createNativeStackNavigator();
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+// @ts-ignore
+export const TabTodaysInfoNavigation = ({navigationOptionStyle}) => {
 
-
-export const TabTodaysInfoNavigation = () => {
   return (
-    <View style={styles.container}>
-      <Text>
-        Todays Info
-      </Text>
+    <View style={{flex:1}} collapsable={false}>
+      {/*  This view is included to fix a bug that causes the navigator to not render properly on android*/}
+      <TodaysInfoStack.Navigator initialRouteName={'Today'} screenOptions={{headerShown:true}}>
+        <TodaysInfoStack.Screen name={'Today'} component={TodaysInfoScreen} options={navigationOptionStyle}/>
+      </TodaysInfoStack.Navigator>
     </View>
   );
 };

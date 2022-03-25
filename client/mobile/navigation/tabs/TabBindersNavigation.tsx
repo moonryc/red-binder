@@ -1,5 +1,4 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
   BinderScreen,
   MedicationCreateEditScreen,
@@ -11,23 +10,29 @@ import {
   SelectedBinderScreen
 } from '../../screens';
 
+import { View } from 'react-native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 export const BindersStack = createNativeStackNavigator();
 
+// @ts-ignore
+export const TabBindersNavigation = ({navigationOptionStyle}) => {
 
-export const TabBindersNavigation = () => {
   return (
-    <BindersStack.Navigator screenOptions={{headerShown:false} }>
-      <BindersStack.Screen name={'Binders Home'} component={BinderScreen}/>
-      <BindersStack.Screen name={'Create Medication'} component={MedicationCreateEditScreen}/>
-      <BindersStack.Screen name={'Selected Medication'} component={MedicationSelectedScreen} options={{title:'selected medication'}}/>
+    <View style={{flex:1}} collapsable={false}>
+      {/*  This view is included to fix a bug that causes the navigator to not render properly on android*/}
+      <BindersStack.Navigator screenOptions={{ headerShown: true }}>
+        <BindersStack.Screen name={'Binders Home'} component={BinderScreen} options={navigationOptionStyle} />
+        <BindersStack.Screen name={'Create Medication'} component={MedicationCreateEditScreen} options={navigationOptionStyle}/>
+        <BindersStack.Screen name={'Selected Medication'} component={MedicationSelectedScreen} options={navigationOptionStyle} />
 
-      <BindersStack.Screen name={'Selected Binder'} component={SelectedBinderScreen}/>
-      <BindersStack.Screen name={'Edit Binder'} component={SelectedBinderEditScreen}/>
-      <BindersStack.Screen name={'Binder Medications'} component={SelectedBinderMedications}/>
-      <BindersStack.Screen name={'Binder Interactions'} component={SelectedBinderMedicationInteractions}/>
-      <BindersStack.Screen name={'Binder Medical History'} component={SelectedBinderMedicalHistoryScreen}/>
-    </BindersStack.Navigator>
-
+        <BindersStack.Screen name={'Selected Binder'} component={SelectedBinderScreen} options={navigationOptionStyle}/>
+        <BindersStack.Screen name={'Edit Binder'} component={SelectedBinderEditScreen} options={navigationOptionStyle}/>
+        <BindersStack.Screen name={'Binder Medications'} component={SelectedBinderMedications} options={navigationOptionStyle}/>
+        <BindersStack.Screen name={'Binder Interactions'} component={SelectedBinderMedicationInteractions} options={navigationOptionStyle}/>
+        <BindersStack.Screen name={'Binder Medical History'} component={SelectedBinderMedicalHistoryScreen} options={navigationOptionStyle}/>
+      </BindersStack.Navigator>
+    </View>
   );
 };
 

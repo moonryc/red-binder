@@ -1,28 +1,18 @@
 import React from 'react';
-
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CalendarScreen } from '../../screens';
 
 export const CalendarStack = createNativeStackNavigator();
 
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
 //@ts-ignore
-export const TabCalendarNavigation= ({navigation}:any) => {
+export const TabCalendarNavigation= ({navigationOptionStyle}:any) => {
+
   return (
-    <View style={styles.container}>
-      <Text>
-      Calendar
-      </Text>
+    <View style={{flex:1}} collapsable={false}>
+      <CalendarStack.Navigator initialRouteName={'Calendar Home'}>
+        <CalendarStack.Screen name={'Calendar Home'} component={CalendarScreen} options={navigationOptionStyle}/>
+      </CalendarStack.Navigator>
     </View>
   );
 };
