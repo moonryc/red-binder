@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { Image, ScrollView, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, View } from 'react-native';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { useTailwind } from 'tailwind-rn';
 
@@ -35,26 +35,28 @@ export const SelectedBinderScreen = ({navigation}:any) => {
 
 
   return (
-    <ScrollView>
-      <View style={styles.binderContainer}>
-        <Image
-          style={styles.binderIcon}
-          source={require('../../assets/icon.png')}/>
-      </View>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalHistory}>
+    <SafeAreaView>
+      <ScrollView style={{height:'100%'}}>
+        <View style={styles.binderContainer}>
+          <Image
+            style={styles.binderIcon}
+            source={require('../../assets/icon.png')}/>
+        </View>
+        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalHistory}>
           Medical History
-      </StandardButton>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedications}>
+        </StandardButton>
+        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedications}>
         Medications
-      </StandardButton>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalInteractions}>
+        </StandardButton>
+        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalInteractions}>
         Medical Interactions
-      </StandardButton>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToEditBinder}>
+        </StandardButton>
+        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToEditBinder}>
         Edit Binder
-      </StandardButton>
+        </StandardButton>
 
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
