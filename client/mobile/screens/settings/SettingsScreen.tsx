@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { Text, View } from 'react-native';
+import { SafeAreaView, ScrollView, Text } from 'react-native';
 
 export const SettingsScreen = () => {
   return (
-    <Text>
-
-    </Text>
+    <SafeAreaView>
+      <ScrollView>
+        <Text>Hello</Text>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
