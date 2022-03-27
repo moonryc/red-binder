@@ -1,51 +1,15 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from '../config/connection';
-import bcrypt from 'bcrypt';
+import { model, Schema } from 'mongoose';
 
 
-class User extends Model {
-  declare user_id: number;
-  declare account_id: number;
-  declare name: string;
-  declare color: string;
+const userSchema = new Schema({
+  name: { type: String, required: true },
+  color: { type: String, required: true },
+  medications: [{ type: Schema.Types.ObjectId, ref: 'Medication' }],
+  dosages: [{ type: Schema.Types.ObjectId, ref: 'Dosage' }],
+  scheduled_dosages: [{ type: Schema.Types.ObjectId,ref: 'ScheduledDosages'}]
+});
 
 
-}
-
-User.init(
-  {
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    account_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'account',
-        key: 'account_id',
-      },
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    color: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
+export const User = model('User', userSchema);
 
 
-    sequelize,
-    timestamps: false,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'user',
-  }
-);
-
-export default User;
