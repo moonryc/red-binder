@@ -1,2 +1,2 @@
-export * from './signToken';
-export * from './errorHandler'
+export * from './jwtToken';
+export * from './errorHandler';
