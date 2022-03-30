@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   BinderScreen,
+  CreateBinderScreen,
   MedicationCreateEditScreen,
   MedicationSelectedScreen,
   SelectedBinderEditScreen,
@@ -10,7 +11,7 @@ import {
   SelectedBinderScreen
 } from '../../screens';
 
-import { View } from 'react-native';
+import { Button, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 export const BindersStack = createNativeStackNavigator();
@@ -26,6 +27,7 @@ export const TabBindersNavigation = ({navigationOptionStyle}) => {
         <BindersStack.Screen name={'Create Medication'} component={MedicationCreateEditScreen} options={navigationOptionStyle}/>
         <BindersStack.Screen name={'Selected Medication'} component={MedicationSelectedScreen} options={navigationOptionStyle} />
 
+        <BindersStack.Screen name={'Create Binder'} component={CreateBinderScreen} options={navigationOptionStyle}/>
         <BindersStack.Screen name={'Selected Binder'} component={SelectedBinderScreen} options={navigationOptionStyle}/>
         <BindersStack.Screen name={'Edit Binder'} component={SelectedBinderEditScreen} options={navigationOptionStyle}/>
         <BindersStack.Screen name={'Binder Medications'} component={SelectedBinderMedications} options={navigationOptionStyle}/>
