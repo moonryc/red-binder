@@ -4,11 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "proDevStart": "nodemon app.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
-    "generateSchemaTypeGen": "ts-node --transpile-only src/schema.ts",
-    "seed": "ts-node seeds/index.ts"
+    "devStart": "nodemon app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",

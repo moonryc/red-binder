@@ -1,6 +1,10 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { resolvers, typeDefs } from './schemas';
+import { decodeJwtToken } from './utils/jwtToken';
+
+dotenv.config();
 
 const mongoose = require('mongoose');
 
@@ -9,6 +13,19 @@ const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context:({req})=>{
+
+    const jwtToken = req.headers.authorization || false;
+    if(!jwtToken){
+      return {_id:'',username:'',email:''};
+    }
+    const accountData = decodeJwtToken(jwtToken);
+    if(!accountData){
+      return {_id:'',username:'',email:''};
+    }
+    const {data} = accountData;
+    return {...data};
+  }
 });
 
 app.use(express.urlencoded({ extended: false }));
