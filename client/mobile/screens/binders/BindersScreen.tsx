@@ -1,13 +1,26 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
+import { Button, SafeAreaView, ScrollView } from 'react-native';
+import { BinderItem } from '../../components/list-items';
+import { useUserDataContext } from '../../context/AllContextProvider';
 
-import { SafeAreaView, ScrollView } from 'react-native';
-import { BinderItem } from '../../components/list-items/BinderItem';
-
-const binders=['John','George', 'Ringo', 'Paul'];
+// const binders=['John','George', 'Ringo', 'Paul'];
 
 
 // eslint-disable-next-line no-unused-vars
 export const BinderScreen = ({navigation}:any) => {
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button onPress={() => {
+          navigation.navigate('Create Binder');
+        }} title="New Binder" />
+      ),
+    });
+  }, [navigation]);
+
+
+  const { binders } = useUserDataContext();
 
   const selectBinder = useCallback(
     () => {
@@ -15,14 +28,16 @@ export const BinderScreen = ({navigation}:any) => {
     }, [navigation]);
 
 
+
+
+
+
   return (
     <SafeAreaView>
       <ScrollView style={{height:'100%'}}>
-
-        {binders.map((person,index)=>{
-          return(<BinderItem key={index} binderOwner={person} onPress={selectBinder}/>);
+        {binders.map((binder,index)=>{
+          return(<BinderItem key={index} binderOwner={binder.name} onPress={selectBinder}/>);
         })}
-
       </ScrollView>
     </SafeAreaView>
   );

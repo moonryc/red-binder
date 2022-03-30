@@ -6,3 +6,4 @@ export * from './SelectedBinderMedicalHistoryScreen';
 export * from './SelectedBinderMedicationInteractions';
 export * from './SelectedBinderMedications';
 export * from './SelectedBinderScreen';
+export * from './CreateBinderScreen';

@@ -99,9 +99,9 @@ export const CalendarScreen = () => {
           arrayOfBlankDays.map((date, index) => {
             return (<>
               {index !==0 && (selectedMonth.firstDayOfMonth + index) % 7 === 0 ?
-                <Text key={index + selectedMonth.numberOfDaysInMonth + 'a'}>{'\n'}</Text> : <></>}
+                <Text key={index.toString() + 't'}>{'\n'}</Text> : <></>}
               {/*{(selectedMonth.firstDayOfMonth + index) %7 ===0 ? <><Text>&nbsp;</Text></>:<></>}*/}
-              <CalendarDay key={index} dayNumber={date} />
+              <CalendarDay key={index.toString()+'c'} dayNumber={date} />
             </>);
           })
         }
