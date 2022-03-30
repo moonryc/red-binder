@@ -4,9 +4,7 @@ import { gql } from 'apollo-server-express';
 export const typeDefs = gql`
 
     type jwtToken{
-        accountId:ID,
-        username:String,
-        email:String
+        token:String!
     }
     
     type Account{
@@ -64,20 +62,28 @@ export const typeDefs = gql`
         missed:Boolean,
         timeTaken:String,
     }
-
+    
+    type getAllUsersResult{
+        users:[User]!,
+        token:String
+    }
+    
     
     type Query{
-        getAllUsersByAccountId(id:ID!):[User]!
+        getAllUsers:getAllUsersResult,
         getOneUserByUserId(id:ID!):User
     }
     
     type Mutation{
-        login(username:String!,password:String!):Account,
-        createAccount(username:String!,email:String!,password:String!):Account,
-        createUser(name:String!,color:String!): User, 
-        createMedication(name:String!, bottle_dosage_amount:Float!, bottle_dosage_measurement:String!, next_refill:String!, notes:String):Medication 
-        createDosage(medication_name:String!, dosage_amount:Float!, dosage_measurement:String!, time_to_take:String!, daily:Boolean!, weekly:Boolean!, monthly:Boolean!, monday:Boolean!, tuesday:Boolean!, wednesday:Boolean!, thursday:Boolean!, friday:Boolean!, saturday:Boolean!, sunday:Boolean!):Dosage
+        login(username:String!,password:String!):jwtToken!,
+        createAccount(username:String!,email:String!,password:String!):jwtToken!,
+        createUser(name:String!,color:String!): jwtToken!, 
+#        createMedication(name:String!, bottle_dosage_amount:Float!, bottle_dosage_measurement:String!, next_refill:String!, notes:String):Medication 
+#        createDosage(medication_name:String!, dosage_amount:Float!, dosage_measurement:String!, time_to_take:String!, daily:Boolean!, weekly:Boolean!, monthly:Boolean!, monday:Boolean!, tuesday:Boolean!, wednesday:Boolean!, thursday:Boolean!, friday:Boolean!, saturday:Boolean!, sunday:Boolean!):Dosage
+    }
+
+    type Subscriptions{
+        accountData:[User]!
     }
 `;
-
 
