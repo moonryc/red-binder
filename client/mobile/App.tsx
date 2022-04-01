@@ -5,18 +5,13 @@ import { TailwindProvider } from 'tailwind-rn';
 import utilities from './tailwind.json';
 import AllContextProvider from './context/AllContextProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {Platform} from 'react-native';
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider, createHttpLink
-} from '@apollo/client';
+import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
 import { getJWT } from './services';
 import { setContext } from '@apollo/client/link/context';
-
+import { SERVER_URL } from '@env';
 
 const httpLink = createHttpLink({
-  uri: 'http://10.0.2.2:3001/graphql',
+  uri: SERVER_URL,
 });
 
 const authLink = setContext(async (_, { headers }) => {
@@ -37,6 +32,9 @@ const client = new ApolloClient({
 });
 
 export default function App() {
+
+  // saveBinders([]);
+
   return (
     <ApolloProvider client={client}>
       <SafeAreaProvider>
