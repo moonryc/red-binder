@@ -7,11 +7,12 @@ interface IStandardButton {
   onPress?:()=>void,
   children:any,
   fontSize:'text-xs'|'text-sm'|'text-base'|'text-lg'|'text-xl'|'text-2xl'|'text-3xl'|'text-4xl'|'text-5xl'|'text-6xl'|'text-7xl'|'text-8xl'|'text-9xl'
-  color:string
+  color:string,
+  disabled?:boolean
 }
 
 
-export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, fontSize}) => {
+export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, fontSize,disabled=false}) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const tailwind = useTailwind();
@@ -22,7 +23,7 @@ export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>n
 
 
   return (
-    <Pressable onPressIn={()=>setIsPressed(true)} onPressOut={()=>setIsPressed(false)} onPress={()=>onPress()}>
+    <Pressable disabled={disabled} onPressIn={()=>setIsPressed(true)} onPressOut={()=>setIsPressed(false)} onPress={()=>onPress()}>
       <View style={styles.container}>
         <Text style={styles.text}>
           {children}
