@@ -1,11 +1,23 @@
-import React, { useCallback } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 
 import { Image, SafeAreaView, ScrollView, View } from 'react-native';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { useTailwind } from 'tailwind-rn';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { BinderStackParamList } from '../../navigation';
 
-export const SelectedBinderScreen = ({navigation}:any) => {
+type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'SelectedBinder'>;
 
+export const SelectedBinderScreen = () => {
+
+  const navigation = useNavigation<binderScreenProp>();
+  //@ts-ignore
+  const {params:{_id,image,name}} =useRoute();
+  // const {_id, image} = params;
+  useLayoutEffect(() => {
+    navigation.setOptions({title:name? name:'Null'});
+  },[navigation,name]);
 
   const tailwind = useTailwind();
   const styles = {
@@ -13,26 +25,10 @@ export const SelectedBinderScreen = ({navigation}:any) => {
     binderIcon: {...tailwind('flex rounded-full justify-center'), width:100, height:100 },
   } as const ;
 
-  const goToMedicalHistory = useCallback(
-    () => {
-      navigation.navigate('Binder Medical History');
-    }, [navigation]);
-
-  const goToMedications = useCallback(
-    () => {
-      navigation.navigate('Binder Medications');
-    }, [navigation]);
-
-  const goToMedicalInteractions = useCallback(
-    () => {
-      navigation.navigate('Binder Interactions');
-    }, [navigation]);
-
-  const goToEditBinder = useCallback(
-    () => {
-      navigation.navigate('Edit Binder');
-    }, [navigation]);
-
+  const goToMedicalHistory =()=> navigation.navigate('BinderMedicalHistory');
+  const goToMedications = ()=>navigation.navigate('BinderMedications');
+  const goToMedicalInteractions = ()=>navigation.navigate('BinderInteractions');
+  const goToEditBinder = ()=>navigation.navigate('EditBinder');
 
   return (
     <SafeAreaView>
@@ -40,7 +36,7 @@ export const SelectedBinderScreen = ({navigation}:any) => {
         <View style={styles.binderContainer}>
           <Image
             style={styles.binderIcon}
-            source={require('../../assets/icon.png')}/>
+            source={{uri:image.uri}}/>
         </View>
         <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalHistory}>
           Medical History
