@@ -4,6 +4,10 @@ import { useTailwind } from 'tailwind-rn';
 import { addMonths, format, getDay, getDaysInMonth, getYear, isSameDay, startOfMonth, subMonths } from 'date-fns';
 import CalendarDay from '../../components/calendar/day/CalendarDay';
 import { StandardButton } from '../../components/buttons/StandardButton';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CalendarStackParamList } from '../../navigation';
+
+type CalendarScreenProp = NativeStackNavigationProp<CalendarStackParamList, 'CalendarHome'>;
 
 interface IInitialState {
   firstDayOfMonth: 0 | 1 | 2 | 3 | 4 | 5 | 6,
@@ -12,6 +16,37 @@ interface IInitialState {
   date: Date
   numberOfDaysInMonth: number
 }
+
+
+const initialState: IInitialState = {
+  firstDayOfMonth: getDay(startOfMonth(new Date())),
+  month: format(new Date(), 'MMMM'),
+  year: getYear(new Date()),
+  date: new Date(),
+  numberOfDaysInMonth: getDaysInMonth(new Date())
+};
+
+const reducer = (state: { date: number | Date; }, action: { type: string; }) => {
+  let newDate;
+  if (action.type === 'forwards') {
+    newDate = addMonths(state.date, 1);
+  } else if (action.type === 'backwards') {
+    newDate = subMonths(state.date, 1);
+  } else {
+    throw Error();
+  }
+
+  const firstDayOfTheMonth = getDay(startOfMonth(newDate));
+  const month = format(newDate, 'MMMM');
+  const newYear = getYear(newDate);
+  return {
+    firstDayOfMonth: firstDayOfTheMonth,
+    month: month,
+    year: newYear,
+    date: newDate,
+    numberOfDaysInMonth: getDaysInMonth(newDate)
+  };
+};
 
 export const CalendarScreen = () => {
 
@@ -22,34 +57,6 @@ export const CalendarScreen = () => {
     weekContainer: tailwind('flex w-full flex-row flex-wrap items-center justify-around')
   };
 
-  const initialState: IInitialState = {
-    firstDayOfMonth: getDay(startOfMonth(new Date())),
-    month: format(new Date(), 'MMMM'),
-    year: getYear(new Date()),
-    date: new Date(),
-    numberOfDaysInMonth: getDaysInMonth(new Date())
-  };
-  const reducer = (state: { date: number | Date; }, action: { type: string; }) => {
-    let newDate;
-    if (action.type === 'forwards') {
-      newDate = addMonths(state.date, 1);
-    } else if (action.type === 'backwards') {
-      newDate = subMonths(state.date, 1);
-    } else {
-      throw Error();
-    }
-
-    const firstDayOfTheMonth = getDay(startOfMonth(newDate));
-    const month = format(newDate, 'MMMM');
-    const newYear = getYear(newDate);
-    return {
-      firstDayOfMonth: firstDayOfTheMonth,
-      month: month,
-      year: newYear,
-      date: newDate,
-      numberOfDaysInMonth: getDaysInMonth(newDate)
-    };
-  };
   const [selectedMonth, dispatch] = useReducer(reducer, initialState);
   const [today, setToday] = useState(new Date());
   setInterval(() => {
@@ -59,7 +66,7 @@ export const CalendarScreen = () => {
   }, 1000 * 60);
 
 
-  const BlankDays = ({ numberOfBlankDays }: { numberOfBlankDays: number }) => {
+  const BlankDays = ({ numberOfBlankDays,location }: { numberOfBlankDays: number,location:'beg'|'end' }) => {
     const arrayOfBlankDays = [];
 
     for (let index = 0; index < numberOfBlankDays; index++) {
@@ -70,7 +77,7 @@ export const CalendarScreen = () => {
       <>
         {
           arrayOfBlankDays.map((index) => {
-            return <CalendarDay key={index} />;
+            return <CalendarDay key={index + location} disabled />;
           })
         }
       </>
@@ -88,21 +95,18 @@ export const CalendarScreen = () => {
   //TODO THE NEW LINE IN THIS FUNCTION CAUSES THE CALENDER TO NOT BE CENTERED
   const RemainingDays = () => {
     const arrayOfBlankDays = [];
-
     for (let index = 1; index <= selectedMonth.numberOfDaysInMonth; index++) {
       arrayOfBlankDays.push(index);
     }
-
     return (
       <>
         {
           arrayOfBlankDays.map((date, index) => {
-            return (<>
-              {index !==0 && (selectedMonth.firstDayOfMonth + index) % 7 === 0 ?
-                <Text key={index.toString() + 't'}>{'\n'}</Text> : <></>}
-              {/*{(selectedMonth.firstDayOfMonth + index) %7 ===0 ? <><Text>&nbsp;</Text></>:<></>}*/}
+            return (<React.Fragment key={index.toString() +'ft2'}>
+              {index !==0 && (selectedMonth.firstDayOfMonth + index) % 7 === 0 &&(
+                <Text key={index.toString() + 't'}>{'\n'}</Text>)}
               <CalendarDay key={index.toString()+'c'} dayNumber={date} />
-            </>);
+            </React.Fragment>);
           })
         }
       </>
@@ -119,9 +123,9 @@ export const CalendarScreen = () => {
       </View>
       <View style={styles.weekContainer}>
 
-        <BlankDays numberOfBlankDays={selectedMonth.firstDayOfMonth} />
+        <BlankDays numberOfBlankDays={selectedMonth.firstDayOfMonth} location={'beg'} />
         <RemainingDays />
-        <BlankDays numberOfBlankDays={blankDaysEndCalculator()}/>
+        <BlankDays numberOfBlankDays={blankDaysEndCalculator()} location={'end'}/>
         <Text>{'\n'}</Text>
       </View>
 
