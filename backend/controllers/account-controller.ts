@@ -51,7 +51,3 @@ export const createAccount = async (_:any,{ username, email, password }:CreateAc
     throw new UserInputError(e);
   }
 };
-
-export const accountData = (_:any,token:AccountBody) => {
-
-};
