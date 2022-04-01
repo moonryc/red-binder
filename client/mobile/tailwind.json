@@ -19,14 +19,6 @@
 			"position": "relative"
 		}
 	},
-	"m-4": {
-		"style": {
-			"marginTop": 16,
-			"marginRight": 16,
-			"marginBottom": 16,
-			"marginLeft": 16
-		}
-	},
 	"my-2": {
 		"style": {
 			"marginTop": 8,
@@ -107,14 +99,14 @@
 			"flexDirection": "row-reverse"
 		}
 	},
+	"flex-col": {
+		"style": {
+			"flexDirection": "column"
+		}
+	},
 	"flex-wrap": {
 		"style": {
 			"flexWrap": "wrap"
-		}
-	},
-	"content-center": {
-		"style": {
-			"alignContent": "center"
 		}
 	},
 	"items-center": {
@@ -127,19 +119,9 @@
 			"justifyContent": "center"
 		}
 	},
-	"justify-between": {
-		"style": {
-			"justifyContent": "space-between"
-		}
-	},
 	"justify-around": {
 		"style": {
 			"justifyContent": "space-around"
-		}
-	},
-	"justify-evenly": {
-		"style": {
-			"justifyContent": "space-evenly"
 		}
 	},
 	"rounded-full": {
@@ -312,6 +294,11 @@
 	"underline": {
 		"style": {
 			"textDecorationLine": "underline"
+		}
+	},
+	"[x:string]": {
+		"style": {
+			"x": "string"
 		}
 	}
 }
