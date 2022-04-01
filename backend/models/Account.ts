@@ -6,7 +6,7 @@ const AccountSchema = new Schema({
   username: { type: String, required: true, unique: true, validate:[({length}:{length:number})=>length>=8,'Username must be at least 8 characters']},
   password: { type: String, required: true, match:[/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,'Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character']},
   email: { type: String, required: true,unique:true, match: [/.+@.+\..+/, 'Please enter a valid e-mail address']},
-  users: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+  binders: [{ type: Schema.Types.ObjectId, ref: 'Binder' }]
 });
 
 AccountSchema.pre('save',async function(next) {
