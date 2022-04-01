@@ -1,10 +1,18 @@
-import { useMutation } from '@apollo/client';
-import { LOGIN, saveJWT } from '../../services';
+import { gql, useMutation } from '@apollo/client';
+import { saveJWT } from '../../services';
 import { useEffect } from 'react';
 import { useMainStoreContext } from '../../context/AllContextProvider';
 
+const LOGIN = gql`
+    mutation Login($username: String!, $password: String!) {
+        login(username: $username, password: $password) {
+            token
+        }
+    }`;
+
+
 export const useLoginApi = () => {
-  const {setIsLoggedIn} = useMainStoreContext();
+  const { setIsLoggedIn } = useMainStoreContext();
   const [loginApi, { data, loading, error }] = useMutation(LOGIN);
 
 
@@ -13,8 +21,8 @@ export const useLoginApi = () => {
       saveJWT(data.login.token).then(() => setIsLoggedIn(true));
     }
     console.log(error);
-  }, [data,error]);
+  }, [data, error]);
 
-  return {loginApi, data,loading,error};
+  return { loginApi, data, loading, error };
 
 };
