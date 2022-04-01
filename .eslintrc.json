@@ -27,7 +27,6 @@
     "no-trailing-spaces": "error",
     "default-case": "error",
     "no-fallthrough": "error",
-    "no-unused-vars": "error",
     "no-use-before-define": "error",
     "no-redeclare": "error",
     "brace-style": "error",
@@ -48,5 +47,5 @@
       }
     }
   ],
-  "extends": ["prettier", "eslint:recommended","plugin:jest/recommended","next/core-web-vitals"]
+  "extends": ["prettier", "plugin:jest/recommended","next/core-web-vitals"]
 }
