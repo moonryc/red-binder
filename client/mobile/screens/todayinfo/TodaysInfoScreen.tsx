@@ -1,8 +1,12 @@
 import React from 'react';
 
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { TodaysMedicationItem } from '../../components/list-items';
+import { SafeAreaView, Text, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { TodaysInfoStackParamList } from '../../navigation';
+import { useNavigation } from '@react-navigation/native';
+
+type todaysInfoScreenProp = NativeStackNavigationProp<TodaysInfoStackParamList, 'TodayHome'>;
 
 const upcomingArray = [
   {
@@ -27,7 +31,9 @@ interface ISectionHeader {
   title: string;
 }
 
-const SectionHeader: React.FC<ISectionHeader> = ({ title }) => {
+const SectionHeader: React.FC<ISectionHeader> = ({title}) => {
+
+  const navigation = useNavigation<todaysInfoScreenProp>();
 
   const tailwind = useTailwind();
   const styles = {
@@ -47,35 +53,11 @@ const SectionHeader: React.FC<ISectionHeader> = ({ title }) => {
   );
 };
 
-const Old = () => {
-  return (
-    <ScrollView>
-      <SectionHeader title={'Missed Dosages'} />
-      {upcomingArray.map((medication, index) => {
-        return (
-          <TodaysMedicationItem key={index} color={medication.color} medicationName={medication.medicationName} />
-        );
-      })}
-      <SectionHeader title={'Upcoming Dosages'} />
-      {upcomingArray.map((medication, index) => {
-        return (
-          <TodaysMedicationItem key={index} color={medication.color} medicationName={medication.medicationName} />
-        );
-      })}
+interface props {
+  children:JSX.Element
+}
 
-
-      <SectionHeader title={'Upcoming Refills'} />
-      {upcomingArray.map((medication, index) => {
-        return (
-          <TodaysMedicationItem key={index} color={medication.color} medicationName={medication.medicationName} />
-        );
-      })}
-    </ScrollView>
-  );
-};
-
-
-const Section = ({ children }) => {
+const Section:React.FC<props> = ({ children }) => {
 
 
 
