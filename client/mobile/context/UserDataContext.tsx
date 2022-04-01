@@ -1,49 +1,22 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { loadBinders, saveBinders } from '../services/userData';
-import { gql, useQuery } from '@apollo/client';
-import { GET_ALL_BINDERS, saveJWT } from '../services';
+import React, { createContext, useState } from 'react';
 
 
 export const UserDataContext = createContext({
-  binders:[],
-  setBinders:(value:[object]|[])=>{}
+  binders: [],
+  setBinders: (value: [object] | []) => {
+  }
 });
 
-const UserDataContextContainer = ({children}) => {
+interface UserDataContextContainerProps {
+  children:JSX.Element
+}
 
-  const [hasLoadedData, setHasLoadedData] = useState(false);
-  const [binders, setBinders] = useState<[object]|[]>([]);
-
-
-
-  const { loading, error, data } = useQuery(GET_ALL_BINDERS);
-
-  console.log(data);
-
-  useEffect(()=>{
-    if(data && 'users' in data.getAllUsers){
-      setBinders(data.getAllUsers.users);
-      saveJWT(data.getAllUsers.token);
-    }
-  },[data]);
-
-  useEffect(()=>{
-    loadBinders().then(data=>setBinders(data));
-    setHasLoadedData(true);
-  },[]);
-
-  useEffect(()=>{
-    if(hasLoadedData){
-      saveBinders(binders).catch(e=>console.log(e));
-    }
-  },[binders, hasLoadedData]);
-
-
-
+const UserDataContextContainer:React.FC<UserDataContextContainerProps> = ({ children }) => {
+  const [binders, setBinders] = useState<[object] | []|never[]| object>([]);
 
 
   return (
-    <UserDataContext.Provider value={{ binders,setBinders}}>
+    <UserDataContext.Provider value={{ binders, setBinders }}>
       {children}
     </UserDataContext.Provider>
   );
