@@ -17,7 +17,7 @@ export const decodeJwtToken = (bearerJwtToken:string):false|{data:{_id:string,em
   try{
     //@ts-ignore
     const tokenDecoded = jwt.verify(token,process.env.JWT_SECRET as string, {maxAge:experation});
-    console.log(tokenDecoded);
+    // console.log(tokenDecoded);
     if(!tokenDecoded){
       return false;
     }
