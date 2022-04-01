@@ -1,11 +1,14 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LoginScreen, SignupScreen } from '../screens';
-import { useTheme } from '@react-navigation/native';
+import { ParamListBase, useTheme } from '@react-navigation/native';
 
 export const LoginSignupStack = createNativeStackNavigator();
 
-
+export interface LoginStackParamList extends ParamListBase{
+  Login:undefined,
+  Signup:undefined
+}
 
 export const LoginSignupNavigation = () => {
 
