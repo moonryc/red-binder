@@ -1,8 +1,8 @@
 export interface IMedication {
   _id?:string
   name: string,
-  bottleDosageAmount: string,
-  bottleDosageMeasurement: string,
-  nextRefill: Date,
+  bottle_dosage_amount: number|string,
+  bottle_dosage_measurement: string,
+  next_refill: Date|string,
   notes: string|null|undefined
 }
