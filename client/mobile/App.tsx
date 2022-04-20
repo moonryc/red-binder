@@ -3,20 +3,22 @@ import { StatusBar } from 'expo-status-bar';
 import { Navigation } from './navigation';
 import { TailwindProvider } from 'tailwind-rn';
 import utilities from './tailwind.json';
-import AllContextProvider from './context/AllContextProvider';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
-import { getJWT } from './services';
+
 import { setContext } from '@apollo/client/link/context';
 import { SERVER_URL } from '@env';
+import { ApplicationProvider } from './context/GlobalState';
+import AuthServices from './utils/AuthServices';
 
 const httpLink = createHttpLink({
-  uri: SERVER_URL,
+  uri: 'http://192.168.1.4:3001/graphql',
+  // uri: SERVER_URL,
 });
 
 const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = await getJWT();
+  const token = await AuthServices.getToken();
   // return the headers to the context so httpLink can read them
   return {
     headers: {
@@ -38,12 +40,12 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <SafeAreaProvider>
-        <AllContextProvider>
+        <ApplicationProvider>
           <TailwindProvider utilities={utilities}>
             <StatusBar style='auto' />
             <Navigation />
           </TailwindProvider>
-        </AllContextProvider>
+        </ApplicationProvider>
       </SafeAreaProvider>
     </ApolloProvider>
   );
