@@ -22,9 +22,9 @@ const dosageTypes = ['mg', 'tablet', 'drops', 'grams', 'milliLiter', 'Liter'];
 
 const initialState: IMedication = {
   name: '',
-  bottleDosageAmount: '',
-  bottleDosageMeasurement: dosageTypes[0],
-  nextRefill: new Date(),
+  bottle_dosage_amount: '',
+  bottle_dosage_measurement: dosageTypes[0],
+  next_refill: new Date(),
   notes: ''
 };
 
@@ -41,11 +41,11 @@ const reducer = (state: IMedication, action: reducerAction): IMedication => {
   case 'name':
     return { ...state, name: value };
   case 'bottleDosageAmount':
-    return { ...state, bottleDosageAmount: value };
+    return { ...state, bottle_dosage_amount: value };
   case 'bottleDosageMeasurement':
-    return { ...state, bottleDosageMeasurement: value };
+    return { ...state, bottle_dosage_measurement: value };
   case 'nextRefill':
-    return { ...state, nextRefill: value };
+    return { ...state, next_refill: value };
   case 'notes':
     return { ...state, notes: value };
   default:
@@ -80,7 +80,7 @@ export const MedicationCreateEditScreen = () => {
 
 
   const [medication, dispatch] = useReducer(reducer, initialState);
-  const { name, bottleDosageAmount, bottleDosageMeasurement, nextRefill, notes } = medication;
+  const { name, bottle_dosage_amount, bottle_dosage_measurement, next_refill, notes } = medication;
   const [show, setShow] = useState(false);
 
   const onChange = (_:any,selectedDate:Date|undefined|null):void => {
@@ -102,15 +102,18 @@ export const MedicationCreateEditScreen = () => {
       const {data}= await createMedicationApi({
         variables: {
           ...medication,
-          bottleDosageAmount: parseFloat(bottleDosageAmount),
+          bottle_dosage_amount: parseFloat(bottle_dosage_amount as string),
           binderId
         }
       });
+      navigation.navigate('BinderMedications');
       console.log(data);
     }catch (e) {
       if(error){
+        console.log('error');
         apolloErrorHandler(error);
       }
+      console.log('e=');
       console.log(e);
     }
   };
@@ -120,11 +123,11 @@ export const MedicationCreateEditScreen = () => {
     <CustomScrollableView>
       <StandardInput fontSize={'text-lg'} placeholder={'Medication Name'} value={name}
         onChangeText={(text: string) => dispatch({ property: 'name', value: text })} />
-      <StandardInput fontSize={'text-lg'} placeholder={'Bottle Dosage'} value={bottleDosageAmount}
+      <StandardInput fontSize={'text-lg'} placeholder={'Bottle Dosage'} value={bottle_dosage_amount}
         onChangeText={(text: string) => dispatch({ property: 'bottleDosageAmount', value: text })} />
       <View style={styles.dosageMeasurementContainer}>
 
-        <Picker style={styles.dosageMeasurementPicker} selectedValue={bottleDosageMeasurement}
+        <Picker style={styles.dosageMeasurementPicker} selectedValue={bottle_dosage_measurement}
           onValueChange={((itemValue) => dispatch({
             property: 'bottleDosageMeasurement',
             value: itemValue
@@ -135,8 +138,8 @@ export const MedicationCreateEditScreen = () => {
         </Picker>
 
       </View>
-      <Text style={{ textAlign: 'center' }}>{format(nextRefill, 'dd/MM/yyyy')}</Text>
-      {show && (<DateTimePicker value={nextRefill}
+      <Text style={{ textAlign: 'center' }}>{format(next_refill, 'dd/MM/yyyy')}</Text>
+      {show && (<DateTimePicker value={next_refill}
         mode={'date'}
         is24Hour={true}
         onChange={onChange} />)}

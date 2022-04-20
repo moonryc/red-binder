@@ -8,7 +8,7 @@ import { IMedication } from '../../types';
 import MedicationItem from '../../components/list-items/MedicationItem';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
 
-type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'SelectedMedication'>;
+type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'BinderMedications'>;
 
 export const SelectedBinderMedications = () => {
 
