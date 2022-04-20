@@ -6,6 +6,7 @@ import CalendarDay from '../../components/calendar/day/CalendarDay';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CalendarStackParamList } from '../../navigation';
+import { StatusBar } from 'expo-status-bar';
 
 type CalendarScreenProp = NativeStackNavigationProp<CalendarStackParamList, 'CalendarHome'>;
 
@@ -115,6 +116,7 @@ export const CalendarScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style='auto' />
       <View style={styles.navigation}>
         <StandardButton fontSize={'text-lg'} color={''} onPress={() => dispatch({ type: 'backwards' })}>Back</StandardButton>
         <Text>{selectedMonth.month}{'\n'} {selectedMonth.year}</Text>
