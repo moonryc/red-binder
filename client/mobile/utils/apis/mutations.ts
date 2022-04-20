@@ -15,8 +15,8 @@ export const LOGIN = gql`
     }`;
 
 export const CREATE_MEDICATION = gql`
-    mutation CreateMedication($binderId:ID!,$name: String!, $bottleDosageAmount: Float!, $bottleDosageMeasurement: String!, $nextRefill: String!, $notes: String) {
-        createMedication(binderId:$binderId,name: $name, bottle_dosage_amount: $bottleDosageAmount, bottle_dosage_measurement: $bottleDosageMeasurement, next_refill: $nextRefill, notes: $notes) {
+    mutation CreateMedication($binderId:ID!,$name: String!, $bottle_dosage_amount: Float!, $bottle_dosage_measurement: String!, $next_refill: String!, $notes: String) {
+        createMedication(binderId:$binderId,name: $name, bottle_dosage_amount: $bottle_dosage_amount, bottle_dosage_measurement: $bottle_dosage_measurement, next_refill: $next_refill, notes: $notes) {
             token
         }
     }
