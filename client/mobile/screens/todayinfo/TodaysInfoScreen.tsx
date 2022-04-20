@@ -5,6 +5,7 @@ import { useTailwind } from 'tailwind-rn';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { TodaysInfoStackParamList } from '../../navigation';
 import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
 
 type todaysInfoScreenProp = NativeStackNavigationProp<TodaysInfoStackParamList, 'TodayHome'>;
 
@@ -88,6 +89,7 @@ export const TodaysInfoScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar style='auto' />
       <View style={styles.subContainer}>
         <Section>UPCOMING</Section>
         <Section>MISSED</Section>
