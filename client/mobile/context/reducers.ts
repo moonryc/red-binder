@@ -1,5 +1,6 @@
 import {useReducer} from 'react';
-import { TOGGLE_LOGIN,TOGGLE_THEME, UPDATE_BINDERS, UPDATE_SELECTED_BINDER_INDEX } from './actions';
+import { LOGOUT, TOGGLE_LOGIN, TOGGLE_THEME, UPDATE_BINDERS, UPDATE_SELECTED_BINDER_INDEX } from './actions';
+import AuthServices from '../utils/AuthServices';
 
 //TODO
 export const reducer = (state:any, action:any) => {
@@ -13,6 +14,15 @@ export const reducer = (state:any, action:any) => {
     return {...state, binders: action.value};
   case UPDATE_SELECTED_BINDER_INDEX:
     return {...state, selectedBinderIndex:action.value};
+  case LOGOUT:
+    const initial = {
+      isLoggedIn:false,
+      isLightTheme:true,
+      binders:[],
+      selectedBinderIndex:0,
+      selectedBinder:null,
+    };
+    return {...initial};
     // if it's none of these actions, do not update state at all and keep things the same!
   default:
     return state;

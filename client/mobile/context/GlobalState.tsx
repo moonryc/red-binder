@@ -35,7 +35,7 @@ export const ApplicationProvider = ({value=[],...props}) => {
   });
 
 
-  console.log(state);
+
   return <Provider value={{ state, dispatch }} {...props}/>;
 };
 
