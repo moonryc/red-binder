@@ -42,11 +42,7 @@ const MyDarkTheme = {
   }
 };
 
-
-export const Navigation = () => {
-
-
-  const {state:{isLoggedIn,isLightTheme}} = useApplicationContext();
+const NavigationSelector = ({isLoggedIn}:{isLoggedIn:boolean}) => {
   const {colors}=useTheme();
   const navigationOptionStyle = useMemo(() => ({
     // title: 'My home',
@@ -58,10 +54,21 @@ export const Navigation = () => {
       fontWeight: 'bold'
     }
   }), [colors.primary, colors.text]);
+  return(
+    <>
+      {isLoggedIn ? <HomeScreenNavigation navigationOptionStyle={navigationOptionStyle}/> : <LoginSignupNavigation navigationOptionStyle={navigationOptionStyle}/>}
+    </>
+  );
+};
+
+
+export const Navigation = () => {
+
+  const {state:{isLoggedIn,isLightTheme}} = useApplicationContext();
 
   return (
     <NavigationContainer theme={isLightTheme ? MyLightTheme : MyDarkTheme}>
-      {isLoggedIn ? <HomeScreenNavigation navigationOptionStyle={navigationOptionStyle}/> : <LoginSignupNavigation />}
+      <NavigationSelector isLoggedIn={isLoggedIn}/>
     </NavigationContainer>
   );
 };

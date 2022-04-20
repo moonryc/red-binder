@@ -11,6 +11,13 @@ import { UPDATE_BINDERS } from '../context/actions';
 
 const Drawer = createMaterialBottomTabNavigator();
 
+const screenOptions = (name:string,icon:string)=>{
+  return {
+    tabBarIcon: ({color}:{color:any})=><MaterialCommunityIcons name={icon} color={color} size={26} />
+  };
+};
+
+
 interface props {
   navigationOptionStyle:any
 }
@@ -30,15 +37,6 @@ export const HomeScreenNavigation:React.FC<props> = ({navigationOptionStyle}) =>
       }
     }
   },[binders, bindersData, dispatch]);
-
-  const screenOptions=useCallback(
-    (name:string,icon:string)=>{
-      return {
-        tabBarIcon: ({color}:{color:any})=><MaterialCommunityIcons name={icon} color={color} size={26} />
-      };
-    },[]);
-
-
 
 
 

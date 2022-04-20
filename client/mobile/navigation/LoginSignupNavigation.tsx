@@ -10,20 +10,11 @@ export interface LoginStackParamList extends ParamListBase{
   Signup:undefined
 }
 
-export const LoginSignupNavigation = () => {
+interface props {
+  navigationOptionStyle:any
+}
 
-  const {colors}=useTheme();
-
-  const navigationOptionStyle = {
-    // title: 'My home',
-    headerStyle: {
-      backgroundColor: colors.primary
-    },
-    headerTintColor: colors.text,
-    headerTitleStyle: {
-      fontWeight: 'bold'
-    }
-  } as const;
+export const LoginSignupNavigation:React.FC<props> = ({navigationOptionStyle}) => {
 
   return (
     <LoginSignupStack.Navigator initialRouteName={'Login'} screenOptions={{headerShown:true}}>
