@@ -5,12 +5,16 @@ import { StandardInput } from '../../components/inputs/StandardInput';
 import { Picker } from '@react-native-picker/picker';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { format } from 'date-fns';
-import { useCreateMedication } from '../../hooks/api/useCreateMedication';
 import { useTailwind } from 'tailwind-rn';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BinderStackParamList } from '../../navigation';
 import { useNavigation } from '@react-navigation/native';
 import { IMedication } from '../../types';
+import { useMutation } from '@apollo/client';
+import { CREATE_MEDICATION, GET_ALL_BINDERS } from '../../utils/apis';
+import { apolloErrorHandler } from '../../utils';
+import { useApplicationContext } from '../../context/GlobalState';
+import CustomScrollableView from '../../components/misc/CustomScrollableView';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'CreateBinder'>;
 
@@ -52,6 +56,7 @@ const reducer = (state: IMedication, action: reducerAction): IMedication => {
 
 export const MedicationCreateEditScreen = () => {
 
+  const {state:{binders,selectedBinderIndex}} = useApplicationContext();
   const navigation = useNavigation<binderScreenProp>();
 
   const tailwind = useTailwind();
@@ -69,7 +74,9 @@ export const MedicationCreateEditScreen = () => {
     }
   } as const;
 
-  const { createMedicationApi, loading, error } = useCreateMedication();
+  const [ createMedicationApi, {loading, error }] = useMutation(CREATE_MEDICATION,{
+    refetchQueries:[GET_ALL_BINDERS]
+  });
 
 
   const [medication, dispatch] = useReducer(reducer, initialState);
@@ -86,48 +93,63 @@ export const MedicationCreateEditScreen = () => {
     setShow(true);
   };
 
+  const handleCreateMedication = async () => {
+    try{
+      if(!binders){
+        return;
+      }
+      const binderId = binders[selectedBinderIndex]._id;
+      const {data}= await createMedicationApi({
+        variables: {
+          ...medication,
+          bottleDosageAmount: parseFloat(bottleDosageAmount),
+          binderId
+        }
+      });
+      console.log(data);
+    }catch (e) {
+      if(error){
+        apolloErrorHandler(error);
+      }
+      console.log(e);
+    }
+  };
+
 
   return (
-    <SafeAreaView>
-      <ScrollView style={{ height: '100%' }}>
-        <StandardInput fontSize={'text-lg'} placeholder={'Medication Name'} value={name}
-          onChangeText={(text: string) => dispatch({ property: 'name', value: text })} />
-        <StandardInput fontSize={'text-lg'} placeholder={'Bottle Dosage'} value={bottleDosageAmount}
-          onChangeText={(text: string) => dispatch({ property: 'bottleDosageAmount', value: text })} />
-        <View style={styles.dosageMeasurementContainer}>
+    <CustomScrollableView>
+      <StandardInput fontSize={'text-lg'} placeholder={'Medication Name'} value={name}
+        onChangeText={(text: string) => dispatch({ property: 'name', value: text })} />
+      <StandardInput fontSize={'text-lg'} placeholder={'Bottle Dosage'} value={bottleDosageAmount}
+        onChangeText={(text: string) => dispatch({ property: 'bottleDosageAmount', value: text })} />
+      <View style={styles.dosageMeasurementContainer}>
 
-          <Picker style={styles.dosageMeasurementPicker} selectedValue={bottleDosageMeasurement}
-            onValueChange={((itemValue) => dispatch({
-              property: 'bottleDosageMeasurement',
-              value: itemValue
-            }))}>
-            {dosageTypes.map((color, index) => {
-              return <Picker.Item key={index} label={color} value={color} />;
-            })}
-          </Picker>
+        <Picker style={styles.dosageMeasurementPicker} selectedValue={bottleDosageMeasurement}
+          onValueChange={((itemValue) => dispatch({
+            property: 'bottleDosageMeasurement',
+            value: itemValue
+          }))}>
+          {dosageTypes.map((color, index) => {
+            return <Picker.Item key={index} label={color} value={color} />;
+          })}
+        </Picker>
 
-        </View>
-        <Text style={{ textAlign: 'center' }}>{format(nextRefill, 'dd/MM/yyyy')}</Text>
-        {show && (<DateTimePicker value={nextRefill}
-          mode={'date'}
-          is24Hour={true}
-          onChange={onChange} />)}
-        <StandardButton fontSize={'text-lg'} color={'red'} onPress={showDatePicker}>Set Next Refill
+      </View>
+      <Text style={{ textAlign: 'center' }}>{format(nextRefill, 'dd/MM/yyyy')}</Text>
+      {show && (<DateTimePicker value={nextRefill}
+        mode={'date'}
+        is24Hour={true}
+        onChange={onChange} />)}
+      <StandardButton fontSize={'text-lg'} color={'red'} onPress={showDatePicker}>Set Next Refill
           Date</StandardButton>
-        <StandardInput fontSize={'text-lg'} placeholder={'Notes'} value={notes}
-          onChangeText={(text: string) => dispatch({ property: 'notes', value: text })} />
-        <StandardButton fontSize={'text-lg'} color={'red'} disabled={loading}
-          onPress={() => createMedicationApi({
-            variables: {
-              ...medication,
-              bottleDosageAmount: parseFloat(bottleDosageAmount)
-            }
-          })}>
-          {loading ? (<ActivityIndicator animating={true} color='#ff0000' size={'large'} />) : 'ADD MEDICATION'}
-        </StandardButton>
-        {error && (<Text style={{ textAlign: 'center' }}>{error.message}</Text>)}
-      </ScrollView>
-    </SafeAreaView>
+      <StandardInput fontSize={'text-lg'} placeholder={'Notes'} value={notes}
+        onChangeText={(text: string) => dispatch({ property: 'notes', value: text })} />
+      <StandardButton fontSize={'text-lg'} color={'red'} disabled={loading}
+        onPress={handleCreateMedication}>
+        {loading ? (<ActivityIndicator animating={true} color='#ff0000' size={'large'} />) : 'ADD MEDICATION'}
+      </StandardButton>
+      {error && (<Text style={{ textAlign: 'center' }}>{error.message}</Text>)}
+    </CustomScrollableView>
   );
 };
 
