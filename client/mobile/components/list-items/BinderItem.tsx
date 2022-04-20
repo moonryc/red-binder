@@ -4,6 +4,8 @@ import { useTailwind } from 'tailwind-rn';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BinderStackParamList, CalendarStackParamList } from '../../navigation';
+import { useApplicationContext } from '../../context/GlobalState';
+import { UPDATE_SELECTED_BINDER_INDEX } from '../../context/actions';
 
 interface IBinderItem {
   binderOwner:{
@@ -12,11 +14,13 @@ interface IBinderItem {
     color:string,
     _id:string
   },
+  binderIndex:number
 }
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'SelectedBinder'>;
 
-export const BinderItem:React.FC<IBinderItem> = ({binderOwner:{image,name,color,_id}}) => {
+export const BinderItem:React.FC<IBinderItem> = ({binderOwner:{image,name,color,_id},binderIndex}) => {
+  const {dispatch} = useApplicationContext();
   const navigation = useNavigation<binderScreenProp>();
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const tailwind = useTailwind();
@@ -29,6 +33,7 @@ export const BinderItem:React.FC<IBinderItem> = ({binderOwner:{image,name,color,
 
 
   const onPress = () => {
+    dispatch({type:UPDATE_SELECTED_BINDER_INDEX,value:binderIndex});
     navigation.navigate('SelectedBinder', {_id, image,name});
   };
 
