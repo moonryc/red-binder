@@ -5,7 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LoginStackParamList, SettingsStackParamList } from '../../navigation';
 import { useNavigation } from '@react-navigation/native';
 import { useApplicationContext } from '../../context/GlobalState';
-import { TOGGLE_THEME } from '../../context/actions';
+import { LOGOUT, TOGGLE_THEME } from '../../context/actions';
 import { StatusBar } from 'expo-status-bar';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
 
@@ -18,8 +18,8 @@ export const SettingsScreen = () => {
 
   return (
     <CustomScrollableView>
-      <Text>Hello</Text>
       <StandardButton onPress={()=>dispatch({ type:TOGGLE_THEME })} fontSize={'text-lg'} color={'red'}>{isLightTheme? 'Light Mode': 'Dark Mode'}</StandardButton>
+      <StandardButton onPress={()=>dispatch({ type:LOGOUT })} fontSize={'text-lg'} color={'red'}>Logout</StandardButton>
     </CustomScrollableView>
   );
 };
