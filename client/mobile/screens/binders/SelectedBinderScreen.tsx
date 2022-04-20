@@ -6,6 +6,7 @@ import { useTailwind } from 'tailwind-rn';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BinderStackParamList } from '../../navigation';
+import CustomScrollableView from '../../components/misc/CustomScrollableView';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'SelectedBinder'>;
 
@@ -31,28 +32,26 @@ export const SelectedBinderScreen = () => {
   const goToEditBinder = ()=>navigation.navigate('EditBinder');
 
   return (
-    <SafeAreaView>
-      <ScrollView style={{height:'100%'}}>
-        <View style={styles.binderContainer}>
-          <Image
-            style={styles.binderIcon}
-            source={{uri:image.uri}}/>
-        </View>
-        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalHistory}>
+    <CustomScrollableView>
+      <View style={styles.binderContainer}>
+        <Image
+          style={styles.binderIcon}
+          source={{uri:image.uri}}/>
+      </View>
+      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalHistory}>
           Medical History
-        </StandardButton>
-        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedications}>
+      </StandardButton>
+      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedications}>
         Medications
-        </StandardButton>
-        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalInteractions}>
+      </StandardButton>
+      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalInteractions}>
         Medical Interactions
-        </StandardButton>
-        <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToEditBinder}>
+      </StandardButton>
+      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToEditBinder}>
         Edit Binder
-        </StandardButton>
+      </StandardButton>
 
-      </ScrollView>
-    </SafeAreaView>
+    </CustomScrollableView>
   );
 };
 
