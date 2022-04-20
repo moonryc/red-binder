@@ -26,11 +26,22 @@ export const typeDefs = gql`
         binders:[Binder]
     }
     
+    type Medication{
+        _id:ID,
+        name:String!
+        bottle_dosage_amount:Float!
+        bottle_dosage_measurement:String!
+        next_refill:String
+        notes:String
+        
+    }
+    
     type Binder{
         _id:ID,
         name:String,
         color:String,
-        image:image
+        image:image,
+        medications:[Medication]
     },
     
     type getAllBindersByAccountIdResult{
@@ -46,7 +57,8 @@ export const typeDefs = gql`
         login(username:String!,password:String!):jwtToken!,
         createAccount(username:String!,email:String!,password:String!):jwtToken!,
         createBinder(name:String!,color:String!, image:imageInput!, birthDate:String!): jwtToken!,
-        createMedication(name:String!, bottle_dosage_amount:Float!, bottle_dosage_measurement:String!, next_refill:String!, notes:String):jwtToken!
+        createMedication(binderId:ID!,name:String!, bottle_dosage_amount:Float!, bottle_dosage_measurement:String!, next_refill:String!, notes:String):jwtToken!
+        destroyBinder(binderId:ID!):jwtToken
     }
 `;
 

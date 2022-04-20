@@ -1,4 +1,11 @@
-import { createAccount, createBinder, createMedication, getAllBindersByAccountId, loginAccount } from '../controllers';
+import {
+  createAccount,
+  createBinder,
+  createMedication,
+  destroyBinder,
+  getAllBindersByAccountId,
+  loginAccount
+} from '../controllers';
 
 export const resolvers = {
   Query: {
@@ -8,6 +15,7 @@ export const resolvers = {
     login:loginAccount,
     createAccount:createAccount,
     createBinder:createBinder,
-    createMedication:createMedication
+    createMedication:createMedication,
+    destroyBinder:destroyBinder
   },
 };
