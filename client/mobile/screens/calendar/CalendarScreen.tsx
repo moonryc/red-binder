@@ -1,12 +1,25 @@
 import React, { useReducer, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
-import { addMonths, format, getDay, getDaysInMonth, getYear, isSameDay, startOfMonth, subMonths } from 'date-fns';
-import CalendarDay from '../../components/calendar/day/CalendarDay';
+import {
+  addMonths,
+  format,
+  getDay,
+  getDaysInMonth,
+  getYear,
+  isSameDay,
+  isSameMonth,
+  startOfMonth,
+  subMonths
+} from 'date-fns';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CalendarStackParamList } from '../../navigation';
 import { StatusBar } from 'expo-status-bar';
+import BlankDays from '../../components/calendar/blank-days/BlankDays';
+import CalendarDays from '../../components/calendar/calendar-days/CalendarDays';
+import { useApplicationContext } from '../../context/GlobalState';
+import { useGetRefillDays } from '../../hooks';
 
 type CalendarScreenProp = NativeStackNavigationProp<CalendarStackParamList, 'CalendarHome'>;
 
@@ -17,7 +30,6 @@ interface IInitialState {
   date: Date
   numberOfDaysInMonth: number
 }
-
 
 const initialState: IInitialState = {
   firstDayOfMonth: getDay(startOfMonth(new Date())),
@@ -51,6 +63,7 @@ const reducer = (state: { date: number | Date; }, action: { type: string; }) => 
 
 export const CalendarScreen = () => {
 
+  const {state:{binders}} = useApplicationContext();
   const tailwind = useTailwind();
   const styles = {
     container: tailwind('flex w-full h-full'),
@@ -67,72 +80,31 @@ export const CalendarScreen = () => {
   }, 1000 * 60);
 
 
-  const BlankDays = ({ numberOfBlankDays,location }: { numberOfBlankDays: number,location:'beg'|'end' }) => {
-    const arrayOfBlankDays = [];
+  const arrayOfRefillDates = useGetRefillDays(binders).filter(date=>isSameMonth(new Date(date),selectedMonth.date));
 
-    for (let index = 0; index < numberOfBlankDays; index++) {
-      arrayOfBlankDays.push(index);
-    }
 
-    return (
-      <>
-        {
-          arrayOfBlankDays.map((index) => {
-            return <CalendarDay key={index + location} disabled />;
-          })
-        }
-      </>
-    );
-  };
-  const blankDaysEndCalculator = () => {
 
-    let numberOfDays = (selectedMonth.numberOfDaysInMonth + selectedMonth.firstDayOfMonth);
-    if(numberOfDays >35){
-      return 42-numberOfDays;
-    }else{
-      return 35-numberOfDays;
-    }
-  };
-  //TODO THE NEW LINE IN THIS FUNCTION CAUSES THE CALENDER TO NOT BE CENTERED
-  const RemainingDays = () => {
-    const arrayOfBlankDays = [];
-    for (let index = 1; index <= selectedMonth.numberOfDaysInMonth; index++) {
-      arrayOfBlankDays.push(index);
-    }
-    return (
-      <>
-        {
-          arrayOfBlankDays.map((date, index) => {
-            return (<React.Fragment key={index.toString() +'ft2'}>
-              {index !==0 && (selectedMonth.firstDayOfMonth + index) % 7 === 0 &&(
-                <Text key={index.toString() + 't'}>{'\n'}</Text>)}
-              <CalendarDay key={index.toString()+'c'} dayNumber={date} />
-            </React.Fragment>);
-          })
-        }
-      </>
-    );
-  };
+
 
   return (
     <View style={styles.container}>
-      <StatusBar style='auto' />
+      <StatusBar style="auto" />
       <View style={styles.navigation}>
-        <StandardButton fontSize={'text-lg'} color={''} onPress={() => dispatch({ type: 'backwards' })}>Back</StandardButton>
+        <StandardButton fontSize={'text-lg'} color={''}
+          onPress={() => dispatch({ type: 'backwards' })}>{'<'}</StandardButton>
         <Text>{selectedMonth.month}{'\n'} {selectedMonth.year}</Text>
-        <StandardButton fontSize={'text-lg'} color={''} onPress={() => dispatch({ type: 'forwards' })}>Forwards</StandardButton>
-
+        <StandardButton fontSize={'text-lg'} color={''}
+          onPress={() => dispatch({ type: 'forwards' })}>{'>'}</StandardButton>
       </View>
       <View style={styles.weekContainer}>
-
-        <BlankDays numberOfBlankDays={selectedMonth.firstDayOfMonth} location={'beg'} />
-        <RemainingDays />
-        <BlankDays numberOfBlankDays={blankDaysEndCalculator()} location={'end'}/>
-        <Text>{'\n'}</Text>
+        <BlankDays selectedMonth={selectedMonth} location={'beg'} />
+        <CalendarDays arrayOfRefillDates={arrayOfRefillDates} selectedMonth={selectedMonth}/>
+        <BlankDays selectedMonth={selectedMonth} location={'end'} />
       </View>
-
-
     </View>
   );
 };
+
+
+
 
