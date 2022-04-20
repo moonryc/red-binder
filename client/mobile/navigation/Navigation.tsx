@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 
 import { HomeScreenNavigation } from './HomeScreenNavigation';
-import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from '@react-navigation/native';
 import { LoginSignupNavigation } from './LoginSignupNavigation';
-import { useMainStoreContext } from '../context/AllContextProvider';
+import { useApplicationContext } from '../context/GlobalState';
 
 const MyLightTheme = {
   ...DefaultTheme,
@@ -45,11 +45,23 @@ const MyDarkTheme = {
 
 export const Navigation = () => {
 
-  const { isLoggedIn,isLightTheme } = useMainStoreContext();
+
+  const {state:{isLoggedIn,isLightTheme}} = useApplicationContext();
+  const {colors}=useTheme();
+  const navigationOptionStyle = useMemo(() => ({
+    // title: 'My home',
+    headerStyle: {
+      backgroundColor: colors.primary
+    },
+    headerTintColor: colors.text,
+    headerTitleStyle: {
+      fontWeight: 'bold'
+    }
+  }), [colors.primary, colors.text]);
 
   return (
     <NavigationContainer theme={isLightTheme ? MyLightTheme : MyDarkTheme}>
-      {isLoggedIn ? <HomeScreenNavigation /> : <LoginSignupNavigation />}
+      {isLoggedIn ? <HomeScreenNavigation navigationOptionStyle={navigationOptionStyle}/> : <LoginSignupNavigation />}
     </NavigationContainer>
   );
 };

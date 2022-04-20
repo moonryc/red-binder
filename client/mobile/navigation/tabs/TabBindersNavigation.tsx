@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   BinderScreen,
   CreateBinderScreen,
@@ -13,7 +13,7 @@ import {
 
 import { Button, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ParamListBase } from '@react-navigation/native';
+import { ParamListBase, useTheme } from '@react-navigation/native';
 
 export interface BinderStackParamList extends ParamListBase{
   BindersHome: undefined,
@@ -36,7 +36,7 @@ export const TabBindersNavigation = ({ navigationOptionStyle }) => {
   return (
     <View style={{ flex: 1 }} collapsable={false}>
       {/*  This view is included to fix a bug that causes the navigator to not render properly on android*/}
-      <BindersStack.Navigator screenOptions={{ headerShown: true }} initialRouteName={'BindersHome'}>
+      <BindersStack.Navigator initialRouteName={'BindersHome'}>
         <BindersStack.Screen name={'BindersHome'} component={BinderScreen} options={navigationOptionStyle} />
         <BindersStack.Screen name={'CreateMedication'} component={MedicationCreateEditScreen}
           options={navigationOptionStyle} />
