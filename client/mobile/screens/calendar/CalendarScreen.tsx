@@ -1,25 +1,13 @@
-import React, { useReducer, useState } from 'react';
-import { Text, View } from 'react-native';
-import { useTailwind } from 'tailwind-rn';
-import {
-  addMonths,
-  format,
-  getDay,
-  getDaysInMonth,
-  getYear,
-  isSameDay,
-  isSameMonth,
-  startOfMonth,
-  subMonths
-} from 'date-fns';
-import { StandardButton } from '../../components/buttons/StandardButton';
+import React, { useCallback, useMemo, useReducer } from 'react';
+import { View } from 'react-native';
+import { addMonths, format, getDay, getDaysInMonth, getYear, startOfMonth, subMonths } from 'date-fns';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CalendarStackParamList } from '../../navigation';
 import { StatusBar } from 'expo-status-bar';
 import BlankDays from '../../components/calendar/blank-days/BlankDays';
 import CalendarDays from '../../components/calendar/calendar-days/CalendarDays';
 import { useApplicationContext } from '../../context/GlobalState';
-import { useGetRefillDays } from '../../hooks';
+import CalendarNav from '../../components/calendar/calendar-nav/CalendarNav';
 
 type CalendarScreenProp = NativeStackNavigationProp<CalendarStackParamList, 'CalendarHome'>;
 
@@ -63,24 +51,40 @@ const reducer = (state: { date: number | Date; }, action: { type: string; }) => 
 
 export const CalendarScreen = () => {
 
-  const {state:{binders}} = useApplicationContext();
-  const tailwind = useTailwind();
-  const styles = {
-    container: tailwind('flex w-full h-full'),
-    navigation: tailwind('flex w-full flex-row items-center justify-around my-4'),
-    weekContainer: tailwind('flex w-full flex-row flex-wrap items-center justify-around')
-  };
-
-  const [selectedMonth, dispatch] = useReducer(reducer, initialState);
-  const [today, setToday] = useState(new Date());
-  setInterval(() => {
-    if (!isSameDay(today, new Date())) {
-      setToday(new Date());
+  const styles = useMemo(()=>({
+    container:{
+      display:'flex',
+      width:'100%',
+      height:'100%',
+    },
+    weekContainer:{
+      display:'flex',
+      flexDirection:'row',
+      width:'100%',
+      height:'100%',
+      flexWrap:'wrap',
+      alignItems:'center',
+      justifyContent:'space-around'
     }
-  }, 1000 * 60);
+  }as const),[]);
 
 
-  const arrayOfRefillDates = useGetRefillDays(binders).filter(date=>isSameMonth(new Date(date),selectedMonth.date));
+  const {state:{binders}} = useApplicationContext();
+  const [selectedMonth, dispatch] = useReducer(reducer, initialState);
+
+
+  const previousMonth = useCallback(
+    () => {
+      dispatch({ type: 'backwards' });
+    },
+    []
+  );
+  const nextMonth = useCallback(
+    () => {
+      dispatch({ type: 'forwards' });
+    },
+    []
+  );
 
 
 
@@ -89,16 +93,10 @@ export const CalendarScreen = () => {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <View style={styles.navigation}>
-        <StandardButton fontSize={'text-lg'} color={''}
-          onPress={() => dispatch({ type: 'backwards' })}>{'<'}</StandardButton>
-        <Text>{selectedMonth.month}{'\n'} {selectedMonth.year}</Text>
-        <StandardButton fontSize={'text-lg'} color={''}
-          onPress={() => dispatch({ type: 'forwards' })}>{'>'}</StandardButton>
-      </View>
+      <CalendarNav month={selectedMonth.month} year={selectedMonth.year} previousMonth={previousMonth} nextMonth={nextMonth}/>
       <View style={styles.weekContainer}>
         <BlankDays selectedMonth={selectedMonth} location={'beg'} />
-        <CalendarDays arrayOfRefillDates={arrayOfRefillDates} selectedMonth={selectedMonth}/>
+        <CalendarDays selectedMonth={selectedMonth}/>
         <BlankDays selectedMonth={selectedMonth} location={'end'} />
       </View>
     </View>
