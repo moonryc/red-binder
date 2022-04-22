@@ -1,4 +1,5 @@
 export interface IMedication {
+  owner?:string
   _id?:string
   name: string,
   bottle_dosage_amount: number|string,
