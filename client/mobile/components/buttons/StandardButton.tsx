@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Pressable, Text, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import { useTheme } from '@react-navigation/native';
+import { CustomTheme } from '../../types';
+import { useCustomTheme } from '../../hooks/useCustomTheme';
 
 interface IStandardButton {
   onPress?:()=>void,
@@ -15,11 +18,31 @@ interface IStandardButton {
 export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, fontSize,disabled=false}) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
-  const tailwind = useTailwind();
-  const styles = {
-    container: tailwind(`flex justify-center flex-row my-2 mx-4 px-8 py-6 rounded-full ${isPressed ? 'bg-sky-400' : 'bg-sky-500'}`),
-    text: tailwind(`${fontSize} text-center`)
-  } as const ;
+  const colors = useCustomTheme();
+
+
+  const styles = useMemo(()=>({
+    container: {
+      display:'flex',
+      justifyContent:'center',
+      flexDirection: 'row',
+      marginTop: 10,
+      marginBottom: 10,
+      marginRight:30,
+      marginLeft:30,
+      paddingLeft:15,
+      paddingRight:15,
+      paddingTop:20,
+      paddingBottom:20,
+      borderRadius: 9999,
+      backgroundColor: isPressed ? colors.primaryLight:colors.primaryDark
+    },
+    text:{
+      color:colors.text,
+      textAlign:'center',
+    }
+    //@ts-ignore
+  } as const),[colors.primaryDark, colors.primaryLight, colors.text, isPressed]) ;
 
 
   return (
