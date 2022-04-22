@@ -1,49 +1,77 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { HomeScreenNavigation } from './HomeScreenNavigation';
 import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from '@react-navigation/native';
 import { LoginSignupNavigation } from './LoginSignupNavigation';
 import { useApplicationContext } from '../context/GlobalState';
+import { CustomTheme } from '../types';
+import { useCustomTheme } from '../hooks/useCustomTheme';
 
-const MyLightTheme = {
+
+const MyLightTheme:CustomTheme = {
   ...DefaultTheme,
   dark: false,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3f51b5',
-    primaryLight: 'rgb(101, 115, 195)',
-    primaryDark: 'rgb(44, 56, 126)',
+    primary: '#e7ab63',
+    primaryLight: 'rgb(171,122,87)',
+    primaryDark: 'rgb(105,58,26)',
+    primaryBar:'rgb(105,58,26)',
     text: '#fff',
+
 
     secondary: '#f50057',
     secondaryLight: 'rgb(247, 51, 120)',
     secondaryDark: 'rgb(171, 0, 60)',
 
 
-    background: '#64b5f6',
+
+    background: 'rgb(236,194,140)',
     card: 'rgb(255, 255, 255)',
     border: 'rgb(199, 199, 204)',
-    notification: 'rgb(255, 69, 58)'
+    notification: 'rgb(255, 69, 58)',
+
+
+    refill:'darkblue',
+    refillPressed:'blue'
+
+
   }
 };
 
 //TODO
-const MyDarkTheme = {
+const MyDarkTheme:CustomTheme = {
   ...DarkTheme,
   dark: true,
   colors: {
     ...DarkTheme.colors,
-    primary: 'rgb(255, 45, 85)',
-    background: 'rgb(153,200,232)',
+    primary: '#e7ab63',
+    primaryLight: 'rgb(171,122,87)',
+    primaryDark: 'rgb(105,58,26)',
+    primaryBar:'rgb(105,58,26)',
+    text: '#fff',
+
+
+    secondary: '#f50057',
+    secondaryLight: 'rgb(247, 51, 120)',
+    secondaryDark: 'rgb(171, 0, 60)',
+
+
+
+    background: 'rgb(236,194,140)',
     card: 'rgb(255, 255, 255)',
-    text: 'rgb(28, 28, 30)',
     border: 'rgb(199, 199, 204)',
-    notification: 'rgb(255, 69, 58)'
+    notification: 'rgb(255, 69, 58)',
+
+
+    refill:'darkblue',
+    refillPressed:'blue'
+
   }
 };
 
 const NavigationSelector = ({isLoggedIn}:{isLoggedIn:boolean}) => {
-  const {colors}=useTheme();
+  const colors = useCustomTheme();
   const navigationOptionStyle = useMemo(() => ({
     // title: 'My home',
     headerStyle: {
@@ -53,7 +81,7 @@ const NavigationSelector = ({isLoggedIn}:{isLoggedIn:boolean}) => {
     headerTitleStyle: {
       fontWeight: 'bold'
     }
-  }), [colors.primary, colors.text]);
+  }as const), [colors.primary, colors.text]);
   return(
     <>
       {isLoggedIn ? <HomeScreenNavigation navigationOptionStyle={navigationOptionStyle}/> : <LoginSignupNavigation navigationOptionStyle={navigationOptionStyle}/>}
