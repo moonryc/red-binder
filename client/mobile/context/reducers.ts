@@ -1,9 +1,18 @@
 import {useReducer} from 'react';
-import { LOGOUT, TOGGLE_LOGIN, TOGGLE_THEME, UPDATE_BINDERS, UPDATE_SELECTED_BINDER_INDEX } from './actions';
+import {
+  IAction,
+  LOGOUT,
+  TOGGLE_LOGIN,
+  TOGGLE_THEME,
+  UPDATE_ALL_MEDICATIONS_ARRAY,
+  UPDATE_BINDERS,
+  UPDATE_SELECTED_BINDER_INDEX
+} from './actions';
 import AuthServices from '../utils/AuthServices';
 
-//TODO
-export const reducer = (state:any, action:any) => {
+
+
+export const reducer = (state:any, action:IAction) => {
   switch (action.type) {
   // if action type value is the value of `UPDATE_PRODUCTS`, return a new state object with an updated products array
   case TOGGLE_LOGIN:
@@ -14,7 +23,10 @@ export const reducer = (state:any, action:any) => {
     return {...state, binders: action.value};
   case UPDATE_SELECTED_BINDER_INDEX:
     return {...state, selectedBinderIndex:action.value};
+  case UPDATE_ALL_MEDICATIONS_ARRAY:
+    return {...state, arrayOfMedications:action.value};
   case LOGOUT:
+    AuthServices.logout();
     const initial = {
       isLoggedIn:false,
       isLightTheme:true,
