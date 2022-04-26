@@ -36,3 +36,11 @@ export const DELETE_BINDER = gql`
         }
     }
 `;
+
+export const UPDATE_REFILL_DATE = gql`
+    mutation UpdateRefillDate($medicationId: ID!, $nextRefill: String!) {
+        updateRefillDate(medicationId: $medicationId, next_refill: $nextRefill) {
+            token
+        }
+    }
+`;
