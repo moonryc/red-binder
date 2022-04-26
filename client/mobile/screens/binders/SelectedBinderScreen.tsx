@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 
 import { Image, SafeAreaView, ScrollView, View } from 'react-native';
 import { StandardButton } from '../../components/buttons/StandardButton';
@@ -7,29 +7,28 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BinderStackParamList } from '../../navigation';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
+import { useSimpleNavigation } from '../../hooks';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'SelectedBinder'>;
 
 export const SelectedBinderScreen = () => {
 
-  const navigation = useNavigation<binderScreenProp>();
+
+  const {params} =useRoute();
   //@ts-ignore
-  const {params:{_id,image,name}} =useRoute();
-  // const {_id, image} = params;
-  useLayoutEffect(() => {
-    navigation.setOptions({title:name? name:'Null'});
-  },[navigation,name]);
+  const { image,_id} = params;
+  const { navigate } = useSimpleNavigation(params);
 
   const tailwind = useTailwind();
-  const styles = {
+  const styles = useMemo(()=>({
     binderContainer: tailwind('flex items-center'),
     binderIcon: {...tailwind('flex rounded-full justify-center'), width:100, height:100 },
-  } as const ;
+  } as const),[tailwind] );
 
-  const goToMedicalHistory =()=> navigation.navigate('BinderMedicalHistory');
-  const goToMedications = ()=>navigation.navigate('BinderMedications');
-  const goToMedicalInteractions = ()=>navigation.navigate('BinderInteractions');
-  const goToEditBinder = ()=>navigation.navigate('EditBinder');
+  const goToMedicalHistory =()=> navigate('BinderMedicalHistory');
+  const goToMedications = ()=>navigate('BinderMedications');
+  const goToMedicalInteractions = ()=>navigate('BinderInteractions');
+  const goToEditBinder = ()=>navigate('EditBinder');
 
   return (
     <CustomScrollableView>
@@ -38,16 +37,16 @@ export const SelectedBinderScreen = () => {
           style={styles.binderIcon}
           source={{uri:image.uri}}/>
       </View>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalHistory}>
+      <StandardButton onPress={goToMedicalHistory}>
           Medical History
       </StandardButton>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedications}>
+      <StandardButton onPress={goToMedications}>
         Medications
       </StandardButton>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToMedicalInteractions}>
+      <StandardButton onPress={goToMedicalInteractions}>
         Medical Interactions
       </StandardButton>
-      <StandardButton fontSize={'text-lg'} color={'blue'} onPress={goToEditBinder}>
+      <StandardButton onPress={goToEditBinder}>
         Edit Binder
       </StandardButton>
 

@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Button,
+  Image,
+  NativeSyntheticEvent, NativeTouchEvent, Pressable,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { useTailwind } from 'tailwind-rn';
@@ -13,6 +22,8 @@ import { useMutation } from '@apollo/client';
 import { CREATE_BINDER, GET_ALL_BINDERS } from '../../utils/apis';
 import { apolloErrorHandler } from '../../utils';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'CreateBinder'>;
 
@@ -33,8 +44,8 @@ export const CreateBinderScreen = () => {
     text: tailwind('flex-1 text-xl ml-4')
   } as const;
 
-  const [binderBody, setBinderBody] = useState({ name: '', color: colors[0], image: { uri: '', name: '', type: '' } });
-  const [birthDate, setBirthDate] = useState({ day: 0, month: 0, year: 0 });
+  const [binderBody, setBinderBody] = useState({ name: '', color: colors[0], image: { uri: '', name: '', type: '' },birthDate:new Date() });
+
   const [submitBinderApi,{error,loading}]= useMutation(CREATE_BINDER,{
     refetchQueries:[GET_ALL_BINDERS]
   });
@@ -42,12 +53,7 @@ export const CreateBinderScreen = () => {
   const submitBinder = async () => {
     // await submitBinderApi({ variables: { ...binderBody,birthDate:new Date(birthDate.year,birthDate.month,birthDate.day),image:encodeURIComponent(binderBody.image)} });
     try{
-      const {data}= await submitBinderApi({
-        variables: {
-          ...binderBody,
-          birthDate: new Date(birthDate.year, birthDate.month, birthDate.day)
-        }
-      });
+      const {data}= await submitBinderApi({ variables: binderBody});
 
       console.log(data);
 
@@ -55,7 +61,7 @@ export const CreateBinderScreen = () => {
         apolloErrorHandler(error);
         return;
       }
-      setBinderBody({ name: '', color: colors[0], image: { uri: '', name: '', type: '' } });
+      setBinderBody({ name: '', color: colors[0], image: { uri: '', name: '', type: '' },birthDate: new Date() });
       navigation.navigate('BindersHome');
     }catch (e) {
       if(error){
@@ -87,9 +93,21 @@ export const CreateBinderScreen = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(binderBody);
-  }, [binderBody]);
+
+  const [showDateTimePicker, setShowDateTimePicker] = useState(false);
+
+  const onChange = (_:any, selectedDate:Date|undefined) => {
+    setShowDateTimePicker(false);
+    if(selectedDate === undefined){
+      return;
+    }
+    setBinderBody(prevState => ({...prevState,birthDate: selectedDate}));
+  };
+
+  const showDatepicker = (e:NativeSyntheticEvent<NativeTouchEvent>) => {
+    e.preventDefault();
+    setShowDateTimePicker(true);
+  };
 
 
   return (
@@ -100,17 +118,22 @@ export const CreateBinderScreen = () => {
           source={binderBody.image.uri ? { uri: binderBody.image.uri } : fallbackImage} />
       </View>
       <StandardButton fontSize={'text-lg'} color={'red'} onPress={() => pickImage()}>Set Binder Photo</StandardButton>
-      <StandardInput fontSize={'text-lg'} placeholder={'Person\'s Name'}
+      <StandardInput placeholder={'Person\'s Name'}
         onChangeText={(text: string) => setBinderBody({ ...binderBody, name: text })} />
-      <View style={styles.birthdayContainer}>
-        <StandardInput
-          fontSize={'text-lg'}
-          keyboardType={'number-pad'} placeholder={'day'}
-          onChangeText={(text: string) => setBirthDate({ ...birthDate, day: parseInt(text) })} />
-        <StandardInput fontSize={'text-lg'} keyboardType={'number-pad'} placeholder={'month'}
-          onChangeText={(text: string) => setBirthDate({ ...birthDate, month: parseInt(text) })} />
-        <StandardInput fontSize={'text-lg'} keyboardType={'number-pad'} placeholder={'year'}
-          onChangeText={(text: string) => setBirthDate({ ...birthDate, year: parseInt(text) })} />
+      <View>
+        <View>
+          <Pressable onPressIn={showDatepicker}>
+            <StandardInput editable={false} selectTextOnFocus={false} value={`${binderBody.name ? binderBody.name+'\'s ':''}Birthday: ${format(binderBody.birthDate,'MM/dd/yyyy')} `}/>
+          </Pressable>
+        </View>
+        {showDateTimePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={binderBody.birthDate}
+            mode={'date'}
+            onChange={onChange}
+          />
+        )}
       </View>
       <Picker selectedValue={binderBody.color}
         onValueChange={((itemValue) => setBinderBody({ ...binderBody, color: itemValue }))}>

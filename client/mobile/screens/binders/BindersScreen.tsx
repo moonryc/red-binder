@@ -10,31 +10,33 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_ALL_BINDERS } from '../../utils/apis';
 import { StatusBar } from 'expo-status-bar';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useCustomTheme } from '../../hooks';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'BindersHome'>;
 
 
 export const BinderScreen = () => {
 
+  const colors = useCustomTheme();
   const [fetchAllBinders,{error}] = useLazyQuery(GET_ALL_BINDERS);
-  const { state:{binders} } = useApplicationContext();
+  const { state:{binders}} = useApplicationContext();
   const navigation = useNavigation<binderScreenProp>();
+
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => {
-          navigation.navigate('CreateBinder');
-        }} title="New Binder" />
+        <MaterialCommunityIcons name={'plus-circle-outline'} color={colors.primaryDark} size={26} onPress={()=>navigation.navigate('CreateBinder')}/>
       ),
     });
-  }, [navigation]);
+  }, [colors.primaryDark, navigation]);
 
 
 
   return (
     <CustomScrollableView>
-      <StandardButton fontSize={'text-lg'} color={'red'} onPress={fetchAllBinders}>update</StandardButton>
+      <StandardButton onPress={fetchAllBinders}>update</StandardButton>
       {binders && binders.length >0 && binders.map((binder,binderIndex)=>{
         return(<BinderItem key={binder._id} binderOwner={binder} binderIndex={binderIndex}/>);
       })}
