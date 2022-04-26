@@ -6,7 +6,8 @@ import {
   TOGGLE_THEME,
   UPDATE_ALL_MEDICATIONS_ARRAY,
   UPDATE_BINDERS,
-  UPDATE_SELECTED_BINDER_INDEX
+  UPDATE_SELECTED_BINDER_INDEX,
+  SET_SELECTED_DAY
 } from './actions';
 import AuthServices from '../utils/AuthServices';
 
@@ -25,6 +26,8 @@ export const reducer = (state:any, action:IAction) => {
     return {...state, selectedBinderIndex:action.value};
   case UPDATE_ALL_MEDICATIONS_ARRAY:
     return {...state, arrayOfMedications:action.value};
+  case SET_SELECTED_DAY:
+    return {...state, selectedDate:action.value};
   case LOGOUT:
     AuthServices.logout();
     const initial = {

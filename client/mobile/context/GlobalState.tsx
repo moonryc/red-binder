@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, ReducerAction, useContext, useEffect, useState } from 'react';
 import {useApplicationReducer} from './reducers';
 import { IBinders, IMedication } from '../types';
 import AuthServices from '../utils/AuthServices';
@@ -16,10 +16,12 @@ interface IApplicationContext {
     isLightTheme:boolean,
     binders:IBinders[]|null|[],
     selectedBinderIndex:number,
-    arrayOfMedications:IMedication[]
+    arrayOfMedications:IMedication[],
+    selectedDate:Date,
   },
-  dispatch(state:any,action:IAction):void
+  dispatch:(value: ReducerAction<(state: any, action: IAction) => (any | {isLightTheme: boolean, binders: any[], isLoggedIn: boolean, selectedBinderIndex: number, selectedBinder: null})>) => void
 }
+
 
 const ApplicationContext = createContext<IApplicationContext>({
   state: {
@@ -27,11 +29,13 @@ const ApplicationContext = createContext<IApplicationContext>({
     isLightTheme: true,
     binders: [],
     selectedBinderIndex: 0,
-    arrayOfMedications: []
+    arrayOfMedications: [],
+    selectedDate:new Date(),
   },
-  dispatch: (state: any, action: IAction)=>{},
+  dispatch: (value: ReducerAction<(state: any, action: IAction) => (any | {isLightTheme: boolean, binders: any[], isLoggedIn: boolean, selectedBinderIndex: number, selectedBinder: null})>) => {}
 });
 const {Provider}=ApplicationContext;
+
 
 export const ApplicationProvider = ({value=[],...props}) => {
   const [state,dispatch] = useApplicationReducer({
@@ -40,16 +44,15 @@ export const ApplicationProvider = ({value=[],...props}) => {
     binders:[],
     selectedBinderIndex:0,
     selectedBinder:null,
-    arrayOfMedications:[]
+    arrayOfMedications:[],
+    selectedDate:new Date(),
   });
 
+
+
   useUpdateArrayOfMedications(state.binders,dispatch);
-
-
   const {data:bindersData,error,loading}= useQuery(GET_ALL_BINDERS);
   useParseDatesFromGetBinder(bindersData,dispatch);
-
-
 
   return <Provider value={{ state, dispatch }} {...props}/>;
 };
