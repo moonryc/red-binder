@@ -58,7 +58,8 @@ export const typeDefs = gql`
         createAccount(username:String!,email:String!,password:String!):jwtToken!,
         createBinder(name:String!,color:String!, image:imageInput!, birthDate:String!): jwtToken!,
         createMedication(binderId:ID!,name:String!, bottle_dosage_amount:Float!, bottle_dosage_measurement:String!, next_refill:String!, notes:String):jwtToken!
-        destroyBinder(binderId:ID!):jwtToken
+        destroyBinder(binderId:ID!):jwtToken,
+        updateRefillDate(medicationId:ID!,next_refill:String!):jwtToken!
     }
 `;
 

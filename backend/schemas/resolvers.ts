@@ -4,7 +4,7 @@ import {
   createMedication,
   destroyBinder,
   getAllBindersByAccountId,
-  loginAccount
+  loginAccount, updateRefillDate
 } from '../controllers';
 
 export const resolvers = {
@@ -16,6 +16,7 @@ export const resolvers = {
     createAccount:createAccount,
     createBinder:createBinder,
     createMedication:createMedication,
-    destroyBinder:destroyBinder
+    destroyBinder:destroyBinder,
+    updateRefillDate:updateRefillDate
   },
 };

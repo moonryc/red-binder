@@ -31,3 +31,28 @@ export const createMedication = async (_:any,body:CreateMedicationBody,token:Acc
   }
 
 };
+
+
+interface IUpdateRefillDateBody {
+  medicationId:string,
+  next_refill:string,
+}
+
+export const updateRefillDate = async (_:any,{medicationId,next_refill}:IUpdateRefillDateBody,token:AccountBody) => {
+  if(!token._id){
+    throw new AuthenticationError('you are not logged in');
+  }
+  try {
+
+    const document = await Medication.findByIdAndUpdate({_id:medicationId},{next_refill});
+    if(!document){
+      throw new AuthenticationError('you are not logged in');
+    }
+    const newToken = signJwtToken(token);
+    return {token:newToken};
+  }catch (e) {
+    console.log(e);
+  }
+
+
+};
