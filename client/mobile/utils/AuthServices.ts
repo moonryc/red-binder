@@ -11,13 +11,12 @@ class AuthService{
   }
 
   // check if user's logged in
-  isLoggedIn(){
+  async isLoggedIn(){
     // Checks if there is a saved token and it's still valid
-    // TODO
-    // @ts-ignore
-    const token = this.getToken();
-    // TODO
-    // @ts-ignore
+    const token = await this.getToken();
+    if(!token){
+      return false;
+    }
     return !!token && !this.isTokenExpired(token); // handwaiving here
   }
 
