@@ -9,13 +9,12 @@ import { useCustomTheme } from '../../hooks/useCustomTheme';
 interface IStandardButton {
   onPress?:()=>void,
   children:any,
-  fontSize:'text-xs'|'text-sm'|'text-base'|'text-lg'|'text-xl'|'text-2xl'|'text-3xl'|'text-4xl'|'text-5xl'|'text-6xl'|'text-7xl'|'text-8xl'|'text-9xl'
-  color:string,
   disabled?:boolean
+  [x:string]:any
 }
 
 
-export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, fontSize,disabled=false}) => {
+export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, disabled=false, ...props}) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const colors = useCustomTheme();
@@ -47,7 +46,7 @@ export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>n
 
   return (
     <Pressable disabled={disabled} onPressIn={()=>setIsPressed(true)} onPressOut={()=>setIsPressed(false)} onPress={()=>onPress()}>
-      <View style={styles.container}>
+      <View style={styles.container} {...props}>
         <Text style={styles.text}>
           {children}
         </Text>
