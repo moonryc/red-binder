@@ -1,12 +1,43 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useLayoutEffect } from 'react';
 
+type typeDestination = 'BindersHome'
+  | 'CreateMedication'
+  | 'SelectedMedication'
+  | 'CreateBinder'
+  | 'SelectedBinder'
+  | 'EditBinder'
+  | 'BinderMedications'
+  | 'BinderInteractions'
+  | 'BinderMedicalHistory'
+  | 'CalendarHome'
+  | 'SettingsHome'
 
+interface IParams{
+  name?:string|null,
+  headerRight?:Function,
+}
 
-export const useSimpleNavigation = (navigation:any ,destination:string, headerTitle:string,params:object={}) => {
+export const useSimpleNavigation = ({ name }:IParams={name:null}, headerRight?:Function) => {
 
-  const navigate = () => {
-    navigation.navigate(destination, {...params,headerTitle });
+  const navigation = useNavigation();
+  useLayoutEffect(() => {
+    if (name) {
+      navigation.setOptions({ title: name ? name : 'Null'});
+    }
+    navigation.setOptions({headerRight:()=>headerRight?.()});
+  }, [navigation, name, headerRight]);
+  const navigate = (destination:typeDestination, headerTitle:string|undefined=undefined,params:object={}) => {
+    if(headerTitle){
+      //@ts-ignore
+      return navigation.navigate(destination, {...params,name:headerTitle });
+    }
+    //@ts-ignore
+    navigation.navigate(destination, {...params});
   };
-
-  return {navigate};
+  return {navigation,navigate};
 };
+
+
+
+
