@@ -21,14 +21,14 @@ const NavButton: React.FC<INavButton> = ({ onPress, children }) => {
       width: 60,
       height: 60,
       borderRadius: 60 / 2,
-      backgroundColor: isPressed ? colors.primaryLight : colors.primaryDark
+      backgroundColor: isPressed ? colors.primaryLight : colors.primaryLight
     },
     text: {
       display:'flex',
       color: colors.text,
       textAlign: 'center'
     }
-  } as const), [colors.primaryDark, colors.primaryLight, colors.text, isPressed]);
+  } as const), [colors.primaryLight, colors.text, isPressed]);
 
   return (
     <Pressable onPressIn={() => setIsPressed(true)} onPressOut={() => setIsPressed(false)} onPress={() => onPress()}>
@@ -52,7 +52,6 @@ interface props {
 const CalendarNav: React.FC<props> = ({ previousMonth, nextMonth, month, year }) => {
 
   const colors = useCustomTheme();
-
   const styles = useMemo(() => ({
     navigation: {
       display: 'flex',
@@ -63,22 +62,16 @@ const CalendarNav: React.FC<props> = ({ previousMonth, nextMonth, month, year })
     }
   } as const), []);
 
-  const goBack = () => {
-    previousMonth();
-  };
 
-  const goForward = () => {
-    nextMonth();
-  };
 
   return (
     <View style={styles.navigation}>
-      <NavButton onPress={goBack}>
-        <MaterialCommunityIcons name={'chevron-left'} color={colors.text} size={26} />
+      <NavButton onPress={()=>previousMonth()}>
+        <MaterialCommunityIcons name={'chevron-left'} color={colors.primaryDark} size={30} />
       </NavButton>
       <Text>{`${month} - ${year}`}</Text>
-      <NavButton onPress={goForward}>
-        <MaterialCommunityIcons name={'chevron-right'} color={colors.text} size={26} />
+      <NavButton onPress={()=>nextMonth()}>
+        <MaterialCommunityIcons name={'chevron-right'} color={colors.primaryDark} size={30} />
       </NavButton>
     </View>
   );

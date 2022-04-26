@@ -42,7 +42,7 @@ const BlankDays:React.FC<props> = ({ selectedMonth: { numberOfDaysInMonth,firstD
     <>
       {
         arrayOfBlankDays.map((index) => {
-          return <CalendarDay key={index + location} disabled />;
+          return <CalendarDay key={index + location} disabled isRefillDay={false} isToday={false}/>;
         })
       }
       {location === 'end' && <Text>{'\n'}</Text>}

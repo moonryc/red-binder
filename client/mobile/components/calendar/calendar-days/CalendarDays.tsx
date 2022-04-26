@@ -6,6 +6,8 @@ import { useApplicationContext } from '../../../context/GlobalState';
 import { useGetToday } from '../../../hooks/useGetToday';
 import { IMedication } from '../../../types';
 import SelectedCalendarDayModal from '../../modals/selected-calendar-day-modal/SelectedCalendarDayModal';
+import CalendarWeek from '../calendar-week/CalendarWeek';
+import { ICalendarDay } from '../../../types/calendar';
 
 interface props {
   selectedMonth: {
@@ -17,36 +19,18 @@ interface props {
   };
 }
 
-interface ICalendarDay {
-  numberOfDayInMonth: number,
-  isRefill: boolean,
-  isToday: boolean,
-  refills:IMedication[]
-}
+const chunkArray=(myArray:any[], chunk_size:number)=>{
+  var index = 0;
+  var arrayLength = myArray.length;
+  var tempArray = [];
 
-interface modalData {
-  isOpen:boolean,
-  refills:[]
-}
-
-const initialModalData = {
-  isOpen:false,
-  refills:[]
-};
-
-type actionTypes = 'open'|'close'|'setRefills'
-
-const reducer = (state:modalData,action:{type:actionTypes,value?:any}) => {
-  switch(action.type){
-  case 'open':
-    return {...state, isOpen:true};
-  case 'close':
-    return {...state, isOpen:false};
-  case 'setRefills':
-    return {...state, refills:action.value};
-  default:
-    return {...state};
+  for (index = 0; index < arrayLength; index += chunk_size) {
+    const myChunk = myArray.slice(index, index+chunk_size);
+    // Do something if you want with the group
+    tempArray.push(myChunk);
   }
+
+  return tempArray;
 };
 
 const CalendarDays: React.FC<props> = ({
@@ -55,44 +39,47 @@ const CalendarDays: React.FC<props> = ({
   const today = useGetToday();
   const monthNumber = getMonth(date);
   const { state: { arrayOfMedications } } = useApplicationContext();
-  const [modalState,modalDispatch] = useReducer(reducer,initialModalData);
-  const {isOpen}=modalState;
 
   const arrayOfDays:ICalendarDay[] = [];
-  for (let index = 1; index <= numberOfDaysInMonth; index++) {
+  for (let index = 0; index < firstDayOfMonth; index++) {
+    arrayOfDays.push({
+      isFillerDay:true,
+      date: new Date(),
+      isToday:false,
+      isRefill:false,
+      isMissedDosage:false,
+    });
+  }
+  for(let index = 1; index<=numberOfDaysInMonth;index++){
     const calendarDay = new Date(year,monthNumber,index);
     const refills = arrayOfMedications.filter((medication)=> isSameDay(medication.next_refill as Date, calendarDay) );
     const isRefill = refills.length>0;
     arrayOfDays.push({
-      numberOfDayInMonth:index,
+      isFillerDay:false,
+      date: calendarDay,
+      isToday:isSameDay(today, calendarDay),
       isRefill:isRefill,
-      isToday: isSameDay(today, calendarDay),
-      refills:refills
-    } as ICalendarDay);
+      isMissedDosage:false,
+    });
   }
-
-  const handleCalendarDayPress = (refills:IMedication[]) => {
-    modalDispatch({type:'open'});
-    modalDispatch({type:'setRefills',value:refills});
-  };
-
-  const closeModal = () => {
-    modalDispatch({type:'close'});
-    modalDispatch({type:'setRefills',value:[]});
-  };
+  while( arrayOfDays.length<42){
+    arrayOfDays.push({
+      isFillerDay:true,
+      date: new Date(),
+      isToday:false,
+      isRefill:false,
+      isMissedDosage:false,
+    });
+  }
+  let arrayOfWeeks:ICalendarDay[][] = chunkArray(arrayOfDays,7);
 
   return (
     <>
       {
-        arrayOfDays.map(({ numberOfDayInMonth, isRefill,isToday, refills }, index) => {
-          return (<React.Fragment key={index.toString() + 'ft2'}>
-            {index !== 0 && (firstDayOfMonth + index) % 7 === 0 && (
-              <Text key={index.toString() + 't'}>{'\n'}</Text>)}
-            <CalendarDay key={index.toString() + 'c'} dayNumber={numberOfDayInMonth} isRefillDay={isRefill} isToday={isToday} onPress={()=>handleCalendarDayPress(refills)}/>
-          </React.Fragment>);
-        })
+        arrayOfWeeks.map((week,index)=>(
+          <CalendarWeek key={index} daysInWeek={week}/>
+        ))
       }
-      <SelectedCalendarDayModal isCalendarDayOpen={isOpen} setIsCalendarDayOpen={closeModal}/>
     </>
   );
 };
