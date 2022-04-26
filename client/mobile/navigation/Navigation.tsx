@@ -13,11 +13,11 @@ const MyLightTheme:CustomTheme = {
   dark: false,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#e7ab63',
-    primaryLight: 'rgb(171,122,87)',
-    primaryDark: 'rgb(105,58,26)',
-    primaryBar:'rgb(105,58,26)',
-    text: '#fff',
+    primary: '#004e98',
+    primaryLight: '#44a4fd',
+    primaryDark: '#168efd',
+    primaryBar:'#003565',
+    text: '#ffffff',
 
 
     secondary: '#f50057',
@@ -26,11 +26,14 @@ const MyLightTheme:CustomTheme = {
 
 
 
-    background: 'rgb(236,194,140)',
+    background: '#a1d0fd',
     card: 'rgb(255, 255, 255)',
     border: 'rgb(199, 199, 204)',
     notification: 'rgb(255, 69, 58)',
 
+    paper:'rgb(255, 255, 255)',
+    paperShadow:'black',
+    calendarText:'#FFFFFF',
 
     refill:'darkblue',
     refillPressed:'blue'
@@ -44,12 +47,12 @@ const MyDarkTheme:CustomTheme = {
   ...DarkTheme,
   dark: true,
   colors: {
-    ...DarkTheme.colors,
+    ...DefaultTheme.colors,
     primary: '#e7ab63',
     primaryLight: 'rgb(171,122,87)',
     primaryDark: 'rgb(105,58,26)',
     primaryBar:'rgb(105,58,26)',
-    text: '#fff',
+    text: '#e5aa62',
 
 
     secondary: '#f50057',
@@ -58,14 +61,19 @@ const MyDarkTheme:CustomTheme = {
 
 
 
-    background: 'rgb(236,194,140)',
+    background: '#ECC28CFF',
     card: 'rgb(255, 255, 255)',
     border: 'rgb(199, 199, 204)',
     notification: 'rgb(255, 69, 58)',
 
+    paper:'rgb(171,122,87)',
+    paperShadow:'rgb(105,58,26)',
+    calendarText:'rgb(105,58,26)',
 
-    refill:'darkblue',
+    refill:'#998cec',
     refillPressed:'blue'
+
+
 
   }
 };
@@ -77,11 +85,11 @@ const NavigationSelector = ({isLoggedIn}:{isLoggedIn:boolean}) => {
     headerStyle: {
       backgroundColor: colors.primary
     },
-    headerTintColor: colors.text,
+    headerTintColor: colors.primaryDark,
     headerTitleStyle: {
       fontWeight: 'bold'
     }
-  }as const), [colors.primary, colors.text]);
+  }as const), [colors.primary, colors.primaryDark]);
   return(
     <>
       {isLoggedIn ? <HomeScreenNavigation navigationOptionStyle={navigationOptionStyle}/> : <LoginSignupNavigation navigationOptionStyle={navigationOptionStyle}/>}
