@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useReducer } from 'react';
-import { View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { Animated, Button, Easing, View } from 'react-native';
 import { addMonths, format, getDay, getDaysInMonth, getYear, startOfMonth, subMonths } from 'date-fns';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CalendarStackParamList } from '../../navigation';
@@ -8,6 +8,9 @@ import BlankDays from '../../components/calendar/blank-days/BlankDays';
 import CalendarDays from '../../components/calendar/calendar-days/CalendarDays';
 import { useApplicationContext } from '../../context/GlobalState';
 import CalendarNav from '../../components/calendar/calendar-nav/CalendarNav';
+import CalendarMenu from '../../components/calendar/calendar-menu/CalendarMenu';
+import { useCustomTheme } from '../../hooks';
+import { StandardButton } from '../../components/buttons/StandardButton';
 
 type CalendarScreenProp = NativeStackNavigationProp<CalendarStackParamList, 'CalendarHome'>;
 
@@ -51,54 +54,63 @@ const reducer = (state: { date: number | Date; }, action: { type: string; }) => 
 
 export const CalendarScreen = () => {
 
+  const colors = useCustomTheme();
   const styles = useMemo(()=>({
     container:{
+      flex:1,
       display:'flex',
-      width:'100%',
-      height:'100%',
+      // width:'100%',
+      // height:'100%',
+    },
+    calendarContainer:{
+      display:'flex',
+      flex:0,
+
+
+      margin: 15,
+      backgroundColor: colors.paper,
+      borderRadius: 20,
+      padding: 15,
+      alignItems: 'center',
+      shadowColor: colors.paperShadow,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+      height:'auto'
+
     },
     weekContainer:{
-      display:'flex',
-      flexDirection:'row',
-      width:'100%',
-      height:'100%',
-      flexWrap:'wrap',
-      alignItems:'center',
-      justifyContent:'space-around'
+      flex:0,
+
+      height:'auto',
+
     }
-  }as const),[]);
-
-
-  const {state:{binders}} = useApplicationContext();
+  }as const),[colors.primaryDark, colors.primaryLight]);
   const [selectedMonth, dispatch] = useReducer(reducer, initialState);
-
-
   const previousMonth = useCallback(
     () => {
       dispatch({ type: 'backwards' });
-    },
-    []
-  );
+    }, []);
   const nextMonth = useCallback(
     () => {
       dispatch({ type: 'forwards' });
-    },
-    []
-  );
-
-
-
+    }, []);
 
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <CalendarNav month={selectedMonth.month} year={selectedMonth.year} previousMonth={previousMonth} nextMonth={nextMonth}/>
-      <View style={styles.weekContainer}>
-        <BlankDays selectedMonth={selectedMonth} location={'beg'} />
-        <CalendarDays selectedMonth={selectedMonth}/>
-        <BlankDays selectedMonth={selectedMonth} location={'end'} />
+      <View style={styles.calendarContainer}>
+        <CalendarNav month={selectedMonth.month} year={selectedMonth.year} previousMonth={previousMonth} nextMonth={nextMonth}/>
+        <View style={styles.weekContainer}>
+          <CalendarDays selectedMonth={selectedMonth}/>
+        </View>
       </View>
+      <CalendarMenu />
     </View>
   );
 };
