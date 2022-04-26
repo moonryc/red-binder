@@ -1,29 +1,48 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { TextInput, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
+import { useCustomTheme } from '../../hooks';
 
 interface IStandardButton {
-  [x:string]:any
-  fontSize:'text-xs'|'text-sm'|'text-base'|'text-lg'|'text-xl'|'text-2xl'|'text-3xl'|'text-4xl'|'text-5xl'|'text-6xl'|'text-7xl'|'text-8xl'|'text-9xl'
+  [x:string]:any,
+  onPress?:Function,
 }
 
 
-export const StandardInput:React.FC<IStandardButton> = ({fontSize,...props}) => {
+export const StandardInput:React.FC<IStandardButton> = ({fontSize,onPress,...props}) => {
 
 
-  const tailwind = useTailwind();
-  const styles = {
-    container: { ...tailwind(`flex flex-row my-2 mx-4 px-8 rounded-full bg-sky-500 ${fontSize}`), paddingVertical:10 },
-    input:{borderBottomWidth:1, width:'100%'}
-  } as const ;
+  const colors = useCustomTheme();
+  const styles = useMemo(()=>({
+    container: { display:'flex', flexDirection:'row', marginTop: 10,
+      marginBottom: 10,
+      marginRight:30,
+      marginLeft:30,
+      paddingLeft:15,
+      paddingRight:15,
+      paddingTop:10,
+      paddingBottom:10,
+      borderRadius: 9999,
+      backgroundColor: colors.primaryDark
+    },
+    inputContainer:{
+      // borderBottomWidth:1,
+      // paddingLeft:10,
+      width:'100%'
+    },
+    input:{
+      color:colors.text,
+      paddingLeft:5,
+      paddingBottom:5,
+      width:'100%'
+    }
+  } as const),[colors.primaryDark, colors.text]);
 
 
   return (
     <View style={styles.container}>
-      <View style={styles.input}>
-        <TextInput {...props} />
-      </View>
+      <TextInput onPressIn={(e)=>onPress?.(e)} allowFontScaling={true} placeholderTextColor={colors.background} style={styles.input} underlineColorAndroid={styles.input.color} {...props} />
     </View>
   );
 };
