@@ -1,6 +1,14 @@
-import React, { useReducer, useState } from 'react';
+import React, { useCallback, useMemo, useReducer, useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { ActivityIndicator, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  NativeSyntheticEvent,
+  NativeTouchEvent,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View
+} from 'react-native';
 import { StandardInput } from '../../components/inputs/StandardInput';
 import { Picker } from '@react-native-picker/picker';
 import { StandardButton } from '../../components/buttons/StandardButton';
@@ -8,13 +16,14 @@ import { format } from 'date-fns';
 import { useTailwind } from 'tailwind-rn';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BinderStackParamList } from '../../navigation';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { IMedication } from '../../types';
 import { useMutation } from '@apollo/client';
 import { CREATE_MEDICATION, GET_ALL_BINDERS } from '../../utils/apis';
 import { apolloErrorHandler } from '../../utils';
 import { useApplicationContext } from '../../context/GlobalState';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
+import { useSimpleNavigation } from '../../hooks';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'CreateBinder'>;
 
@@ -57,11 +66,9 @@ const reducer = (state: IMedication, action: reducerAction): IMedication => {
 export const MedicationCreateEditScreen = () => {
 
   const {state:{binders,selectedBinderIndex}} = useApplicationContext();
-  const navigation = useNavigation<binderScreenProp>();
 
   const tailwind = useTailwind();
-
-  const styles = {
+  const styles = useMemo(()=>({
     dosageMeasurementContainer: {
       display: 'flex',
       justifyContent: 'center',
@@ -72,13 +79,13 @@ export const MedicationCreateEditScreen = () => {
       ...tailwind('flex justify-center flex-row my-2 mx-4 px-8 py-6 rounded-full bg-sky-500'),
       width: '60%'
     }
-  } as const;
+  } as const),[]);
+  const {params} = useRoute();
+  const {navigate}= useSimpleNavigation(params);
 
   const [ createMedicationApi, {loading, error }] = useMutation(CREATE_MEDICATION,{
     refetchQueries:[GET_ALL_BINDERS]
   });
-
-
   const [medication, dispatch] = useReducer(reducer, initialState);
   const { name, bottle_dosage_amount, bottle_dosage_measurement, next_refill, notes } = medication;
   const [show, setShow] = useState(false);
@@ -89,9 +96,10 @@ export const MedicationCreateEditScreen = () => {
       dispatch({ property: 'nextRefill', value: selectedDate });
     }
   };
-  const showDatePicker = () => {
+  const showDatePicker = useCallback((event: NativeSyntheticEvent<NativeTouchEvent>) => {
+    event.preventDefault();
     setShow(true);
-  };
+  },[]);
 
   const handleCreateMedication = async () => {
     try{
@@ -106,14 +114,12 @@ export const MedicationCreateEditScreen = () => {
           binderId
         }
       });
-      navigation.navigate('BinderMedications');
-      console.log(data);
+      navigate('BinderMedications','Medications');
     }catch (e) {
       if(error){
         console.log('error');
         apolloErrorHandler(error);
       }
-      console.log('e=');
       console.log(e);
     }
   };
@@ -138,20 +144,22 @@ export const MedicationCreateEditScreen = () => {
         </Picker>
 
       </View>
-      <Text style={{ textAlign: 'center' }}>{format(next_refill, 'dd/MM/yyyy')}</Text>
-      {show && (<DateTimePicker value={next_refill}
-        mode={'date'}
-        is24Hour={true}
-        onChange={onChange} />)}
-      <StandardButton fontSize={'text-lg'} color={'red'} onPress={showDatePicker}>Set Next Refill
-          Date</StandardButton>
+
+      <StandardInput fontSize={'text-lg'} onPress={showDatePicker} value={`Next Refill: ${format(next_refill as Date, 'dd/MM/yyyy')}`}/>
+
+
       <StandardInput fontSize={'text-lg'} placeholder={'Notes'} value={notes}
         onChangeText={(text: string) => dispatch({ property: 'notes', value: text })} />
-      <StandardButton fontSize={'text-lg'} color={'red'} disabled={loading}
+      <StandardButton disabled={loading}
         onPress={handleCreateMedication}>
         {loading ? (<ActivityIndicator animating={true} color='#ff0000' size={'large'} />) : 'ADD MEDICATION'}
       </StandardButton>
       {error && (<Text style={{ textAlign: 'center' }}>{error.message}</Text>)}
+      {show && (<DateTimePicker value={next_refill as Date}
+        mode={'date'}
+        is24Hour={true}
+        onChange={onChange} />)}
+
     </CustomScrollableView>
   );
 };
