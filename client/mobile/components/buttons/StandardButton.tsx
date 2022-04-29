@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 
-import { Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '../../types';
@@ -11,10 +11,11 @@ interface IStandardButton {
   children:any,
   disabled?:boolean
   [x:string]:any
+  loading?:boolean
 }
 
 
-export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, disabled=false, ...props}) => {
+export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>null, disabled=false,loading, ...props}) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const colors = useCustomTheme();
@@ -49,6 +50,7 @@ export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>n
       <View style={styles.container} {...props}>
         <Text style={styles.text}>
           {children}
+          {loading && (<ActivityIndicator animating={loading} size={'large'} />)}
         </Text>
       </View>
     </Pressable>
