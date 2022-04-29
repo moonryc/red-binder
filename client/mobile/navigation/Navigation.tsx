@@ -5,7 +5,8 @@ import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from '@react-n
 import { LoginSignupNavigation } from './LoginSignupNavigation';
 import { useApplicationContext } from '../context/GlobalState';
 import { CustomTheme } from '../types';
-import { useCustomTheme } from '../hooks/useCustomTheme';
+import { useCustomTheme } from '../hooks';
+import LoadingScreen from '../screens/LoadingScreen';
 
 
 const MyLightTheme:CustomTheme = {
@@ -104,7 +105,7 @@ export const Navigation = () => {
 
   return (
     <NavigationContainer theme={isLightTheme ? MyLightTheme : MyDarkTheme}>
-      <NavigationSelector isLoggedIn={isLoggedIn}/>
+      {isLoggedIn ===null ? <LoadingScreen/>:<NavigationSelector isLoggedIn={isLoggedIn} />}
     </NavigationContainer>
   );
 };
