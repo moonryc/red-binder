@@ -3,16 +3,9 @@ import { IBinders } from '../../types';
 import { parseDate } from '../../utils/parseDate';
 import { UPDATE_BINDERS } from '../../context/actions';
 
-export const useParseDatesFromGetBinder = (bindersData:any,dispatch:Function) => {
-  const [oldData,setOldData] = useState<IBinders[]>([]);
-
-  useEffect(()=>{
-    parseDatesAndUpdatebinders(bindersData, dispatch, oldData, setOldData).then();
-  },[bindersData, dispatch, oldData]);
-};
 
 
-const parseDatesAndUpdatebinders = async (bindersData:any,dispatch:Function,oldData:any,setOldData:Function) => {
+const parseDatesAndUpdateBinders = async (bindersData:any,dispatch:Function,oldData:any,setOldData:Function) => {
   if(bindersData?.getAllBindersByAccountId?.binders && bindersData?.getAllBindersByAccountId?.binders !== oldData){
     const stringifyData = JSON.stringify(bindersData?.getAllBindersByAccountId?.binders);
     const isDataIdentical = stringifyData===JSON.stringify(oldData);
@@ -37,4 +30,17 @@ const parseDatesAndUpdatebinders = async (bindersData:any,dispatch:Function,oldD
       dispatch({type:UPDATE_BINDERS, value: newBinderData});
     }
   }
+};
+
+/**
+ * This fixes oddities with the dates being stored as strings on the back end and converts them in to Date objects
+ * @param bindersData
+ * @param dispatch
+ */
+export const useParseDatesFromGetBinder = (bindersData:any,dispatch:Function) => {
+  const [oldData,setOldData] = useState<IBinders[]>([]);
+
+  useEffect(()=>{
+    parseDatesAndUpdateBinders(bindersData, dispatch, oldData, setOldData).then();
+  },[bindersData, dispatch, oldData]);
 };
