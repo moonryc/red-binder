@@ -7,3 +7,4 @@ export * from './SelectedBinderMedicationInteractions';
 export * from '../medications/SelectedBinderMedications';
 export * from './SelectedBinderScreen';
 export * from './CreateBinderScreen';
+export * from './CreateMedicalHistoryScreen';
