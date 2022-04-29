@@ -12,6 +12,7 @@ type typeDestination = 'BindersHome'
   | 'BinderMedicalHistory'
   | 'CalendarHome'
   | 'SettingsHome'
+| 'CreateMedicalHistory'
 
 interface IParams{
   name?:string|null,
