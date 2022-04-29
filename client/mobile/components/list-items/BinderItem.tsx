@@ -7,8 +7,9 @@ import { BinderStackParamList, CalendarStackParamList } from '../../navigation';
 import { useApplicationContext } from '../../context/GlobalState';
 import { UPDATE_SELECTED_BINDER_INDEX } from '../../context/actions';
 import { useCustomTheme, useSimpleNavigation } from '../../hooks';
+import fallbackImage from '../../assets/icon.png';
 
-interface IBinderItem {
+interface props {
   binderOwner:{
     image:string,
     name:string,
@@ -20,7 +21,7 @@ interface IBinderItem {
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'SelectedBinder'>;
 
-export const BinderItem:React.FC<IBinderItem> = ({binderOwner:{image,name,color,_id},binderIndex}) => {
+export const BinderItem:React.FC<props> = ({binderOwner:{image,name,color,_id},binderIndex}) => {
   const {dispatch} = useApplicationContext();
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const colors = useCustomTheme();
@@ -51,7 +52,6 @@ export const BinderItem:React.FC<IBinderItem> = ({binderOwner:{image,name,color,
   const {params} = useRoute();
   const {navigate} = useSimpleNavigation(params);
 
-
   const onPress = () => {
     //@ts-ignore
     dispatch({type:UPDATE_SELECTED_BINDER_INDEX,value:binderIndex});
@@ -63,7 +63,7 @@ export const BinderItem:React.FC<IBinderItem> = ({binderOwner:{image,name,color,
       <View style={styles.container}>
         <Image
           style={styles.binderIcon}
-          source={{uri:image.uri}}/>
+          source={{uri:image?`data:image/png;base64,${image}`:fallbackImage}}/>
         <Text style={styles.text} numberOfLines={1}>
           {name}
         </Text>
