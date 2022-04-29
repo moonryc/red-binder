@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import { Animated, Button, Easing, View } from 'react-native';
+import React, { useCallback, useMemo, useReducer } from 'react';
+import { View } from 'react-native';
 import { addMonths, format, getDay, getDaysInMonth, getYear, startOfMonth, subMonths } from 'date-fns';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CalendarStackParamList } from '../../navigation';
 import { StatusBar } from 'expo-status-bar';
-import BlankDays from '../../components/calendar/blank-days/BlankDays';
 import CalendarDays from '../../components/calendar/calendar-days/CalendarDays';
-import { useApplicationContext } from '../../context/GlobalState';
 import CalendarNav from '../../components/calendar/calendar-nav/CalendarNav';
 import CalendarMenu from '../../components/calendar/calendar-menu/CalendarMenu';
 import { useCustomTheme } from '../../hooks';
-import { StandardButton } from '../../components/buttons/StandardButton';
 
 type CalendarScreenProp = NativeStackNavigationProp<CalendarStackParamList, 'CalendarHome'>;
 
@@ -89,7 +86,7 @@ export const CalendarScreen = () => {
       height:'auto',
 
     }
-  }as const),[colors.primaryDark, colors.primaryLight]);
+  }as const),[colors.paper, colors.paperShadow]);
   const [selectedMonth, dispatch] = useReducer(reducer, initialState);
   const previousMonth = useCallback(
     () => {
