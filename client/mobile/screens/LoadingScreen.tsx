@@ -2,11 +2,12 @@ import React from 'react';
 
 import { Text, View } from 'react-native';
 
-export const LoadingScreen = () => {
+const LoadingScreen = () => {
   return (
     <Text>
-
+      LOADING
     </Text>
   );
 };
 
+export default LoadingScreen;
