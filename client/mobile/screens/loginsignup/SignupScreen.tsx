@@ -57,7 +57,7 @@ export const SignupScreen = () => {
     try{
       const { data } = await signUp({ variables: signupBody });
       await AuthServices.saveJwtToken(data.createAccount.token);
-      dispatch(TOGGLE_LOGIN);
+      dispatch({type: TOGGLE_LOGIN });
     }catch (e) {
       if(error){
         console.log('error');
