@@ -13,21 +13,21 @@ import { getDate } from 'date-fns';
 import { ICalendarDay } from '../../../types/calendar';
 import { useApplicationContext } from '../../../context/GlobalState';
 import { SET_SELECTED_DAY } from '../../../context/actions';
+import { useCustomStyles } from './useCustomStyles';
 
 
 const CalendarDay:React.FC<ICalendarDay> = ({isFillerDay=false,isToday=false,isMissedDosage=false,isRefill,date=new Date(),onPress=null}) => {
   const colors=useCustomTheme();
   const {width} = useWindowDimensions();
   const {dispatch} =useApplicationContext();
-  const tailwind = useTailwind();
   const [isPressed, setIsPressed] = useState(false);
   const styles = useMemo(()=>({
-    dayContainer:{ ...tailwind(`${isFillerDay?'':'bg-sky-500'} rounded-full flex justify-center`),
-      // flex:1/7,
+    dayContainer:{
       width:1/9 *width,
       height: 1/9*width,
-      // borderRadius:9999,
-      backgroundColor: isFillerDay ? colors.primaryLight: isPressed ? colors.primaryBar :colors.primaryLight,
+      borderRadius:(1/7*width)/2,
+      justifyContent:'center',
+      backgroundColor: isFillerDay ? colors.paper: isPressed ? colors.primaryBar :colors.primaryLight,
     },
     refill:{
       backgroundColor: isRefill ? isPressed ? colors.refillPressed :colors.refill:'',
@@ -41,11 +41,11 @@ const CalendarDay:React.FC<ICalendarDay> = ({isFillerDay=false,isToday=false,isM
       fontSize:22,
       textAlign:'center',
     }
-  }as const),[colors.calendarText, colors.primary, colors.primaryBar, colors.primaryLight, colors.refill, colors.refillPressed, isFillerDay, isPressed, isRefill, isToday, tailwind, width]);
+  }as const),[colors.calendarText, colors.paper, colors.primary, colors.primaryBar, colors.primaryLight, colors.refill, colors.refillPressed, isFillerDay, isPressed, isRefill, isToday, width]);
 
 
   if(isFillerDay){
-    return(<View style={[styles.dayContainer,{backgroundColor:colors.primaryLight}]}></View>);
+    return(<View style={[styles.dayContainer,{backgroundColor:colors.paper}]}></View>);
   }
 
   return(
