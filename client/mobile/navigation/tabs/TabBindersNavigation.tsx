@@ -14,6 +14,7 @@ import {
 import { Button, View } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ParamListBase, useTheme } from '@react-navigation/native';
+import CreateMedicalHistoryScreen from '../../screens/binders/CreateMedicalHistoryScreen';
 
 export interface BinderStackParamList extends ParamListBase{
   BindersHome: undefined,
@@ -42,7 +43,6 @@ export const TabBindersNavigation = ({ navigationOptionStyle }) => {
           options={navigationOptionStyle} />
         <BindersStack.Screen name={'SelectedMedication'} component={MedicationSelectedScreen}
           options={navigationOptionStyle} />
-
         <BindersStack.Screen name={'CreateBinder'} component={CreateBinderScreen} options={navigationOptionStyle} />
         <BindersStack.Screen name={'SelectedBinder'} component={SelectedBinderScreen}
           options={navigationOptionStyle} />
@@ -53,6 +53,8 @@ export const TabBindersNavigation = ({ navigationOptionStyle }) => {
         <BindersStack.Screen name={'BinderInteractions'} component={SelectedBinderMedicationInteractions}
           options={navigationOptionStyle} />
         <BindersStack.Screen name={'BinderMedicalHistory'} component={SelectedBinderMedicalHistoryScreen}
+          options={navigationOptionStyle} />
+        <BindersStack.Screen name={'CreateMedicalHistory'} component={CreateMedicalHistoryScreen}
           options={navigationOptionStyle} />
       </BindersStack.Navigator>
     </View>
