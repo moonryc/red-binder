@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-
+import fallbackImage from '../../assets/icon.png';
 import { Image, SafeAreaView, ScrollView, View } from 'react-native';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { useTailwind } from 'tailwind-rn';
@@ -35,7 +35,7 @@ export const SelectedBinderScreen = () => {
       <View style={styles.binderContainer}>
         <Image
           style={styles.binderIcon}
-          source={{uri:image.uri}}/>
+          source={{uri:image ?`data:image/png;base64,${image}`:fallbackImage}}/>
       </View>
       <StandardButton onPress={goToMedicalHistory}>
           Medical History

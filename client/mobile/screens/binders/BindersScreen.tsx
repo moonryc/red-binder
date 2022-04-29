@@ -19,10 +19,13 @@ type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'Binders
 export const BinderScreen = () => {
 
   const colors = useCustomTheme();
-  const [fetchAllBinders,{error}] = useLazyQuery(GET_ALL_BINDERS);
-  const { state:{binders}} = useApplicationContext();
+  const [fetchAllBinders,{error}] = useLazyQuery(GET_ALL_BINDERS, {
+    nextFetchPolicy:'network-only',
+    fetchPolicy:'network-only'
+  });
+  const { state} = useApplicationContext();
+  const {binders} = state;
   const navigation = useNavigation<binderScreenProp>();
-
 
   useLayoutEffect(() => {
     navigation.setOptions({
