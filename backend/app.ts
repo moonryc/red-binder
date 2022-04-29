@@ -5,8 +5,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { resolvers, typeDefs } from './schemas';
 import { decodeJwtToken } from './utils';
 const cors = require('cors');
-
-
+import {graphqlUploadExpress} from 'graphql-upload';
 const mongoose = require('mongoose');
 
 const PORT = process.env.PORT || 3001;
@@ -38,7 +37,10 @@ const server = new ApolloServer({
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
+// app.use(express.static('public'));
+// app.use(bodyparser.json());
+// app.use(bodyparser.urlencoded({extended:false}));
+app.use(graphqlUploadExpress());
 
 
 // Create a new instance of an Apollo server with the GraphQL schema
