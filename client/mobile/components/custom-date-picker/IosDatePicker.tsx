@@ -6,6 +6,7 @@ import CustomPicker from '../custom-picker/CustomPicker';
 import { getDaysInMonth, getMonth, getYear } from 'date-fns';
 import CustomPickerItem from '../custom-picker/CustomPickerItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import IosDateOption from './IosDateOption';
 
 interface props {
   updateBirthdate:Function,
@@ -58,6 +59,9 @@ const reducer = (state:IinitialState,{type,value}:IAction):IinitialState => {
 
 
 
+
+
+
 const IosDatePicker:React.FC<props> = ({updateBirthdate}) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -72,29 +76,35 @@ const IosDatePicker:React.FC<props> = ({updateBirthdate}) => {
   const colors = useCustomTheme();
 
   const styles = useMemo(()=>({
-    container: {
+    container:{
       display:'flex',
-      justifyContent:'space-around',
+      flex:1,
+      marginTop:20
+    },
+    iosDateOptionsContainer: {
+      display:'flex',
+      // justifyContent:'space-around',
+      justifyContent:'space-between',
       flexDirection: 'row',
-      marginTop: 10,
+      alignItems:'center',
+      // marginTop: 10,
       marginBottom: 10,
       marginRight:30,
       marginLeft:30,
-      paddingLeft:15,
-      paddingRight:15,
-      paddingTop:20,
+      // paddingLeft:15,
+      // paddingRight:15,
+      // paddingTop:20,
       paddingBottom:20,
-      borderRadius: 9999,
-      backgroundColor: colors.primaryDark
+      borderRadius: 9999
+      // backgroundColor: colors.primaryDark
     },
     text:{
-      color:colors.text,
-      textAlign:'center',
+      marginLeft:30,
+      marginBottom:15,
+      color:colors.primaryDark,
+      textAlign:'left',
+      fontWeight:'bold'
     },
-    pressable:{
-      flex:1,
-      flexDirection:'row'
-    }
   } as const),[colors.primaryDark, colors.text]) ;
 
   const toggleDay = useCallback(() => {
@@ -129,20 +139,13 @@ const IosDatePicker:React.FC<props> = ({updateBirthdate}) => {
         <>
           <View style={styles.container}>
 
-            <Text>Birthday:</Text>
+            <Text style={styles.text}>Birthdate:</Text>
 
-            <Pressable style={styles.pressable} onPress={toggleDay}>
-              <Text style={{color:colors.text}} >Day: {day}</Text>
-              <MaterialCommunityIcons name={'menu-down'} color={colors.text} size={26}/>
-            </Pressable>
-            <Pressable style={styles.pressable} onPress={toggleMonth}>
-              <Text>Month: {month}</Text>
-              <MaterialCommunityIcons name={'menu-down'} color={colors.text} size={26}/>
-            </Pressable>
-            <Pressable style={styles.pressable} onPress={toggleYear}>
-              <Text>Year: {year}</Text>
-              <MaterialCommunityIcons name={'menu-down'} color={colors.text} size={26}/>
-            </Pressable>
+            <View style={styles.iosDateOptionsContainer}>
+              <IosDateOption toggleOption={toggleDay} value={day}/>
+              <IosDateOption toggleOption={toggleMonth} value={month}/>
+              <IosDateOption toggleOption={toggleYear} value={year}/>
+            </View>
 
           </View>
           <CustomPicker isPickerOpen={isDayPickerOpen} closeCustomPicker={toggleDay} onSelectValue={updateDay} title={'Day'}>

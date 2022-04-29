@@ -264,14 +264,12 @@ export const CreateBinderScreen = () => {
       <StandardInput placeholder={'Person\'s Name'}
         onChangeText={(text: string) => dispatch({ type:'updateName',value: text })} />
       <StandardButton onPress={toggleColorPicker}>Favorite Color: {color}</StandardButton>
-      <View>
-        <AndroidDatePicker
-          isDatePickerOpen={isDatePickerOpen}
-          dateValue={birthDate}
-          toggleDatePicker={showDatepicker}
-          updateDate={updateAndroidBirthdate} />
-        <IosDatePicker updateBirthdate={updateIosBirthdate}/>
-      </View>
+      <AndroidDatePicker
+        isDatePickerOpen={isDatePickerOpen}
+        dateValue={birthDate}
+        toggleDatePicker={showDatepicker}
+        updateDate={updateAndroidBirthdate} />
+      <IosDatePicker updateBirthdate={updateIosBirthdate}/>
       <CustomPicker isPickerOpen={isColorPickerOpen} closeCustomPicker={toggleColorPicker} title={'Colors'} onSelectValue={onColorChange}>
         {colors.map((color,index)=>(
           <CustomPickerItem value={color} key={index}/>
