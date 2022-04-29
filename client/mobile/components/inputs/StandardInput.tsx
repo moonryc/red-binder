@@ -7,6 +7,13 @@ import { useCustomTheme } from '../../hooks';
 interface IStandardButton {
   [x:string]:any,
   onPress?:Function,
+  keyboardType?: 'default'|
+  'number-pad'|
+  'decimal-pad'|
+  'numeric'|
+  'email-address'|
+  'phone-pad'|
+  'url'
 }
 
 
@@ -24,7 +31,7 @@ export const StandardInput:React.FC<IStandardButton> = ({fontSize,onPress,...pro
       paddingTop:10,
       paddingBottom:10,
       borderRadius: 9999,
-      backgroundColor: colors.primaryDark
+      backgroundColor: colors.primaryDark,
     },
     inputContainer:{
       // borderBottomWidth:1,
