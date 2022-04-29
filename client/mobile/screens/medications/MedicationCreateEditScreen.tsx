@@ -3,10 +3,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   ActivityIndicator,
   NativeSyntheticEvent,
-  NativeTouchEvent,
+  NativeTouchEvent, Pressable,
   SafeAreaView,
   ScrollView,
-  Text,
+  Text, TextInput,
   View
 } from 'react-native';
 import { StandardInput } from '../../components/inputs/StandardInput';
@@ -23,42 +23,56 @@ import { CREATE_MEDICATION, GET_ALL_BINDERS } from '../../utils/apis';
 import { apolloErrorHandler } from '../../utils';
 import { useApplicationContext } from '../../context/GlobalState';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
-import { useSimpleNavigation } from '../../hooks';
+import { useCustomTheme, useSimpleNavigation } from '../../hooks';
+import { useMedicationCreateEditScreenStyles } from '../screen-styles/medications/useMedicationCreateEditScreenStyles';
+import CustomPicker from '../../components/custom-picker/CustomPicker';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import CustomPickerItem from '../../components/custom-picker/CustomPickerItem';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'CreateBinder'>;
 
 const dosageTypes = ['mg', 'tablet', 'drops', 'grams', 'milliLiter', 'Liter'];
 
-const initialState: IMedication = {
+interface IinitialState extends IMedication {
+  isPickerOpen:boolean
+}
+
+const initialState: IinitialState = {
   name: '',
   bottle_dosage_amount: '',
   bottle_dosage_measurement: dosageTypes[0],
   next_refill: new Date(),
-  notes: ''
+  notes: '',
+  isPickerOpen:false
 };
 
-type reducerAction =
-  | { property: 'name'; value: string }
-  | { property: 'bottleDosageAmount', value: string }
-  | { property: 'bottleDosageMeasurement', value: string }
-  | { property: 'nextRefill', value: Date }
-  | { property: 'notes', value: string }
+interface reducerAction {
+  type:'name'| 'bottleDosageAmount'|
+'bottleDosageMeasurement'|
+'nextRefill'|
+'notes'|
+'togglePicker',
+  value?: string|Date
+}
 
-const reducer = (state: IMedication, action: reducerAction): IMedication => {
-  const { property, value } = action;
-  switch (property) {
+
+
+const reducer = (state: IinitialState, {type,value}: reducerAction): IinitialState => {
+  switch (type) {
   case 'name':
-    return { ...state, name: value };
+    return { ...state, name: value as string };
   case 'bottleDosageAmount':
-    return { ...state, bottle_dosage_amount: value };
+    return { ...state, bottle_dosage_amount: value as string };
   case 'bottleDosageMeasurement':
-    return { ...state, bottle_dosage_measurement: value };
+    return { ...state, bottle_dosage_measurement: value as string, isPickerOpen:false };
   case 'nextRefill':
-    return { ...state, next_refill: value };
+    return { ...state, next_refill: value as Date };
   case 'notes':
-    return { ...state, notes: value };
+    return { ...state, notes: value as string };
+  case 'togglePicker':
+    return { ...state, isPickerOpen: !state.isPickerOpen };
   default:
-    throw new Error();
+    throw state;
   }
 };
 
@@ -66,34 +80,22 @@ const reducer = (state: IMedication, action: reducerAction): IMedication => {
 export const MedicationCreateEditScreen = () => {
 
   const {state:{binders,selectedBinderIndex}} = useApplicationContext();
-
-  const tailwind = useTailwind();
-  const styles = useMemo(()=>({
-    dosageMeasurementContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center'
-
-    },
-    dosageMeasurementPicker: {
-      ...tailwind('flex justify-center flex-row my-2 mx-4 px-8 py-6 rounded-full bg-sky-500'),
-      width: '60%'
-    }
-  } as const),[]);
+  const colors = useCustomTheme();
+  const styles = useMedicationCreateEditScreenStyles(colors);
   const {params} = useRoute();
   const {navigate}= useSimpleNavigation(params);
 
   const [ createMedicationApi, {loading, error }] = useMutation(CREATE_MEDICATION,{
     refetchQueries:[GET_ALL_BINDERS]
   });
-  const [medication, dispatch] = useReducer(reducer, initialState);
-  const { name, bottle_dosage_amount, bottle_dosage_measurement, next_refill, notes } = medication;
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { name, bottle_dosage_amount, bottle_dosage_measurement, next_refill, notes,isPickerOpen } = state;
   const [show, setShow] = useState(false);
 
   const onChange = (_:any,selectedDate:Date|undefined|null):void => {
     setShow(false);
     if(selectedDate){
-      dispatch({ property: 'nextRefill', value: selectedDate });
+      dispatch({ type: 'nextRefill', value: selectedDate });
     }
   };
   const showDatePicker = useCallback((event: NativeSyntheticEvent<NativeTouchEvent>) => {
@@ -101,7 +103,7 @@ export const MedicationCreateEditScreen = () => {
     setShow(true);
   },[]);
 
-  const handleCreateMedication = async () => {
+  const handleCreateMedication = useCallback(async () => {
     try{
       if(!binders){
         return;
@@ -109,7 +111,7 @@ export const MedicationCreateEditScreen = () => {
       const binderId = binders[selectedBinderIndex]._id;
       const {data}= await createMedicationApi({
         variables: {
-          ...medication,
+          ...state,
           bottle_dosage_amount: parseFloat(bottle_dosage_amount as string),
           binderId
         }
@@ -122,34 +124,37 @@ export const MedicationCreateEditScreen = () => {
       }
       console.log(e);
     }
-  };
+  }, [binders, bottle_dosage_amount, createMedicationApi, error, navigate, selectedBinderIndex, state]);
+
+  const handleTogglePicker = useCallback(
+    () => {
+      dispatch({type:'togglePicker'});
+    },[]
+  );
+
+  const handlePickerChange = useCallback((value:string) => {
+    dispatch({type:'bottleDosageMeasurement',value});
+  }, []);
 
 
   return (
     <CustomScrollableView>
-      <StandardInput fontSize={'text-lg'} placeholder={'Medication Name'} value={name}
-        onChangeText={(text: string) => dispatch({ property: 'name', value: text })} />
-      <StandardInput fontSize={'text-lg'} placeholder={'Bottle Dosage'} value={bottle_dosage_amount}
-        onChangeText={(text: string) => dispatch({ property: 'bottleDosageAmount', value: text })} />
+      <StandardInput placeholder={'Medication Name'} value={name}
+        onChangeText={(text: string) => dispatch({ type: 'name', value: text })} />
       <View style={styles.dosageMeasurementContainer}>
-
-        <Picker style={styles.dosageMeasurementPicker} selectedValue={bottle_dosage_measurement}
-          onValueChange={((itemValue) => dispatch({
-            property: 'bottleDosageMeasurement',
-            value: itemValue
-          }))}>
-          {dosageTypes.map((color, index) => {
-            return <Picker.Item key={index} label={color} value={color} />;
-          })}
-        </Picker>
-
+        <View style={styles.containerUnderline}>
+          <TextInput placeholderTextColor={colors.background} style={styles.input} onChangeText={(text:string) => dispatch({ type: 'bottleDosageAmount', value: text})}
+            placeholder={'Bottle Dosage'} value={bottle_dosage_amount as string} keyboardType={'number-pad'}
+          />
+          <Pressable style={styles.pressable} onPress={()=>handleTogglePicker()}>
+            <Text style={styles.dosageMeasurement}>{bottle_dosage_measurement}</Text>
+            <MaterialCommunityIcons name={'menu-down'} color={colors.text} size={26}/>
+          </Pressable>
+        </View>
       </View>
-
-      <StandardInput fontSize={'text-lg'} onPress={showDatePicker} value={`Next Refill: ${format(next_refill as Date, 'dd/MM/yyyy')}`}/>
-
-
-      <StandardInput fontSize={'text-lg'} placeholder={'Notes'} value={notes}
-        onChangeText={(text: string) => dispatch({ property: 'notes', value: text })} />
+      <StandardInput onPress={showDatePicker} value={`Next Refill: ${format(next_refill as Date, 'dd/MM/yyyy')}`}/>
+      <StandardInput multiline={true} placeholder={'Notes'} value={notes}
+        onChangeText={(text: string) => dispatch({ type:'notes', value: text })} />
       <StandardButton disabled={loading}
         onPress={handleCreateMedication}>
         {loading ? (<ActivityIndicator animating={true} color='#ff0000' size={'large'} />) : 'ADD MEDICATION'}
@@ -159,7 +164,11 @@ export const MedicationCreateEditScreen = () => {
         mode={'date'}
         is24Hour={true}
         onChange={onChange} />)}
-
+      <CustomPicker isPickerOpen={isPickerOpen} closeCustomPicker={handleTogglePicker} onSelectValue={handlePickerChange} title={'Dosage Type'}>
+        {dosageTypes.map((color, index) => (
+          <CustomPickerItem key={index} value={color}/>
+        ))}
+      </CustomPicker>
     </CustomScrollableView>
   );
 };
