@@ -7,11 +7,7 @@ export const GET_ALL_BINDERS = gql`
                 _id
                 name
                 color
-                image {
-                    name
-                    type
-                    uri
-                }
+                image
                 medications {
                     _id
                     name

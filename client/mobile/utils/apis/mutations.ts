@@ -23,7 +23,7 @@ export const CREATE_MEDICATION = gql`
 `;
 
 export const CREATE_BINDER = gql`
-    mutation CreateBinder($name: String!, $color: String!, $image: imageInput!, $birthDate: String!) {
+    mutation CreateBinder($name: String!, $color: String!, $image: Upload!, $birthDate: String!) {
         createBinder(name: $name, color: $color, image: $image, birthDate: $birthDate) {
             token
         }
@@ -44,3 +44,4 @@ export const UPDATE_REFILL_DATE = gql`
         }
     }
 `;
+
