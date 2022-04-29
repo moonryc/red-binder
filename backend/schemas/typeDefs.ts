@@ -1,22 +1,21 @@
-import { gql } from 'apollo-server-express';
+import { gql,} from 'apollo-server-express';
 
 
 export const typeDefs = gql`
 
+    scalar Upload
+    
     type jwtToken{
         token:String!
     }
     
-    input imageInput{
-        name:String!
-        type:String!
-        uri:String!
+    type File{
+        path:String!,
+        filename:String!
+        mimetype:String!
+        encoding:String!
     }
-    type image{
-        name:String
-        type:String!
-        uri:String!
-    }
+    
     
     type Account{
         _id:ID,
@@ -40,7 +39,7 @@ export const typeDefs = gql`
         _id:ID,
         name:String,
         color:String,
-        image:image,
+        image:String,
         medications:[Medication]
     },
     
@@ -56,7 +55,7 @@ export const typeDefs = gql`
     type Mutation{
         login(username:String!,password:String!):jwtToken!,
         createAccount(username:String!,email:String!,password:String!):jwtToken!,
-        createBinder(name:String!,color:String!, image:imageInput!, birthDate:String!): jwtToken!,
+        createBinder(name:String!,color:String!, image:Upload!, birthDate:String!): jwtToken!,
         createMedication(binderId:ID!,name:String!, bottle_dosage_amount:Float!, bottle_dosage_measurement:String!, next_refill:String!, notes:String):jwtToken!
         destroyBinder(binderId:ID!):jwtToken,
         updateRefillDate(medicationId:ID!,next_refill:String!):jwtToken!

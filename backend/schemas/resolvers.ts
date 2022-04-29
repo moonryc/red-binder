@@ -6,8 +6,10 @@ import {
   getAllBindersByAccountId,
   loginAccount, updateRefillDate
 } from '../controllers';
+import { GraphQLUpload } from 'graphql-upload';
 
 export const resolvers = {
+  Upload:GraphQLUpload,
   Query: {
     getAllBindersByAccountId:getAllBindersByAccountId,
   },
