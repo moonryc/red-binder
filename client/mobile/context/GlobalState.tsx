@@ -7,12 +7,12 @@ import { useUpdateArrayOfMedications } from '../hooks';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_BINDERS } from '../utils/apis';
 import { parseDate } from '../utils/parseDate';
-import { IAction, UPDATE_BINDERS } from './actions';
+import { IAction, TOGGLE_LOGIN, UPDATE_BINDERS } from './actions';
 import { useParseDatesFromGetBinder } from '../hooks/api/useParseDatesFromGetBinder';
 
 interface IApplicationContext {
   state:{
-    isLoggedIn: boolean
+    isLoggedIn: boolean|null
     isLightTheme:boolean,
     binders:IBinders[]|null|[],
     selectedBinderIndex:number,
@@ -25,7 +25,7 @@ interface IApplicationContext {
 
 const ApplicationContext = createContext<IApplicationContext>({
   state: {
-    isLoggedIn: false,
+    isLoggedIn: null,
     isLightTheme: true,
     binders: [],
     selectedBinderIndex: 0,
@@ -39,7 +39,7 @@ const {Provider}=ApplicationContext;
 
 export const ApplicationProvider = ({value=[],...props}) => {
   const [state,dispatch] = useApplicationReducer({
-    isLoggedIn:AuthServices.isLoggedIn(),
+    isLoggedIn:null,
     isLightTheme:true,
     binders:[],
     selectedBinderIndex:0,
@@ -49,10 +49,27 @@ export const ApplicationProvider = ({value=[],...props}) => {
   });
 
 
+  const {data:bindersData,error,loading,refetch}= useQuery(GET_ALL_BINDERS);
 
+  useEffect(() => {
+    if(!state.isLoggedIn){
+      AuthServices.isLoggedIn().then(isLoggedIn=>{
+        if(isLoggedIn){
+          refetch().then(r=>dispatch({type:TOGGLE_LOGIN}));
+        }
+      });
+    }
+    if(state.isLoggedIn){
+      refetch();
+    }
+  }, [dispatch, refetch, state.isLoggedIn]);
+
+  //updates the global states that hold the array of all medication which is used for the calendar
   useUpdateArrayOfMedications(state.binders,dispatch);
-  const {data:bindersData,error,loading}= useQuery(GET_ALL_BINDERS);
+  //Used To Fix some date oddities
   useParseDatesFromGetBinder(bindersData,dispatch);
+
+
 
   return <Provider value={{ state, dispatch }} {...props}/>;
 };
