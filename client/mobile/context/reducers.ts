@@ -7,7 +7,7 @@ import {
   UPDATE_ALL_MEDICATIONS_ARRAY,
   UPDATE_BINDERS,
   UPDATE_SELECTED_BINDER_INDEX,
-  SET_SELECTED_DAY
+  SET_SELECTED_DAY, SET_THEME_PREFERENCE
 } from './actions';
 import AuthServices from '../utils/AuthServices';
 
@@ -28,6 +28,8 @@ export const reducer = (state:any, action:IAction) => {
     return {...state, arrayOfMedications:action.value};
   case SET_SELECTED_DAY:
     return {...state, selectedDate:action.value};
+  case SET_THEME_PREFERENCE:
+    return {...state, themePreference:action.value};
   case LOGOUT:
     AuthServices.logout();
     const initial = {

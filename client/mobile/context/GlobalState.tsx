@@ -12,8 +12,9 @@ import { useParseDatesFromGetBinder } from '../hooks/api/useParseDatesFromGetBin
 
 interface IApplicationContext {
   state:{
-    isLoggedIn: boolean|null
+    isLoggedIn: boolean
     isLightTheme:boolean,
+    themePreference: 'light'|'dark'|'default'| null
     binders:IBinders[]|null|[],
     selectedBinderIndex:number,
     arrayOfMedications:IMedication[],
@@ -25,8 +26,9 @@ interface IApplicationContext {
 
 const ApplicationContext = createContext<IApplicationContext>({
   state: {
-    isLoggedIn: null,
+    isLoggedIn: false,
     isLightTheme: true,
+    themePreference: 'default',
     binders: [],
     selectedBinderIndex: 0,
     arrayOfMedications: [],
@@ -39,8 +41,9 @@ const {Provider}=ApplicationContext;
 
 export const ApplicationProvider = ({value=[],...props}) => {
   const [state,dispatch] = useApplicationReducer({
-    isLoggedIn:null,
+    isLoggedIn:false,
     isLightTheme:true,
+    themePreference: 'default',
     binders:[],
     selectedBinderIndex:0,
     selectedBinder:null,
