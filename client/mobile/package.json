@@ -33,6 +33,7 @@
     "expo-status-bar": "~1.2.0",
     "graphql": "^16.3.0",
     "jwt-decode": "^3.1.2",
+    "lodash": "^4.17.21",
     "metro-config": "^0.70.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@types/apollo-upload-client": "^17.0.0",
+    "@types/lodash": "^4.14.182",
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/react-native-dotenv": "^0.2.0",
