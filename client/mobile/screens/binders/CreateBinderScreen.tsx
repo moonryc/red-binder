@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import { Image, NativeSyntheticEvent, NativeTouchEvent, Platform, Pressable, Text, View } from 'react-native';
-import { Picker, PickerIOS } from '@react-native-picker/picker';
+import { Image, NativeSyntheticEvent, NativeTouchEvent, Platform, Text, View } from 'react-native';
 import { StandardButton } from '../../components/buttons/StandardButton';
 import { useTailwind } from 'tailwind-rn';
 import * as ImagePicker from 'expo-image-picker';
@@ -13,12 +12,10 @@ import { useMutation } from '@apollo/client';
 import { CREATE_BINDER, GET_ALL_BINDERS } from '../../utils/apis';
 import { apolloErrorHandler } from '../../utils';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { format } from 'date-fns';
 import { ReactNativeFile } from 'apollo-upload-client';
 import { manipulateAsync } from 'expo-image-manipulator';
+// @ts-ignore
 import * as mime from 'react-native-mime-types';
-import { useEffectDebugger } from '../../hooks/useEffectDebugger';
 import { ItemValue } from '@react-native-picker/picker/typings/Picker';
 import CustomPicker from '../../components/custom-picker/CustomPicker';
 import CustomPickerItem from '../../components/custom-picker/CustomPickerItem';
@@ -144,6 +141,10 @@ export const CreateBinderScreen = () => {
     refetchQueries:[GET_ALL_BINDERS]
   });
 
+  useEffect(()=>{
+    console.log(state);
+  },[state]);
+
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -222,6 +223,7 @@ export const CreateBinderScreen = () => {
   },[]);
 
   const updateAndroidBirthdate = useCallback((_:any, selectedDate:Date|undefined) => {
+    console.log('update android birthdate ran');
     if(selectedDate === undefined){
       dispatch({type:'toggleDatePicker'});
       return;
@@ -230,14 +232,15 @@ export const CreateBinderScreen = () => {
   },[]);
 
   const updateIosBirthdate = useCallback((_:any, selectedDate:Date|undefined) => {
+    console.log('update Ios birthdate ran');
     if(selectedDate === undefined){
-      dispatch({type:'toggleDatePicker'});
       return;
     }
     dispatch({type:'updateBirthDate',value: selectedDate});
   },[]);
 
   const showDatepicker = useCallback((e:NativeSyntheticEvent<NativeTouchEvent>) => {
+    console.log('show datepicker ran');
     // e.preventDefault();
     dispatch({type:'toggleDatePicker'});
   },[]);
@@ -269,7 +272,7 @@ export const CreateBinderScreen = () => {
         dateValue={birthDate}
         toggleDatePicker={showDatepicker}
         updateDate={updateAndroidBirthdate} />
-      <IosDatePicker updateBirthdate={updateIosBirthdate}/>
+      {Platform.OS === 'ios' && <IosDatePicker updateBirthdate={updateIosBirthdate}/>}
       <CustomPicker isPickerOpen={isColorPickerOpen} closeCustomPicker={toggleColorPicker} title={'Colors'} onSelectValue={onColorChange}>
         {colors.map((color,index)=>(
           <CustomPickerItem value={color} key={index}/>
