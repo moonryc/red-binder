@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react';
 
 import { HomeScreenNavigation } from './HomeScreenNavigation';
-import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { LoginSignupNavigation } from './LoginSignupNavigation';
 import { useApplicationContext } from '../context/GlobalState';
-import { CustomTheme } from '../types';
+import { CustomTheme, LoadingProcess, LoadingProcessStatus } from '../types';
 import { useCustomTheme } from '../hooks';
 import LoadingScreen from '../screens/LoadingScreen';
+import AppLoader from '../components/app-loader/AppLoader';
+import { useCheckLogin } from '../hooks/startup/useCheckLogin';
+import { useLoadData } from '../hooks/startup/useLoadData';
 
 
 const MyLightTheme:CustomTheme = {
@@ -102,11 +105,24 @@ const NavigationSelector = ({isLoggedIn}:{isLoggedIn:boolean}) => {
 export const Navigation = () => {
 
   const {state:{isLoggedIn,isLightTheme}} = useApplicationContext();
+  const checkIfLoggedIn = useCheckLogin();
+  const getUserData = useLoadData(checkIfLoggedIn);
 
-  return (
-    <NavigationContainer theme={isLightTheme ? MyLightTheme : MyDarkTheme}>
-      {isLoggedIn ===null ? <LoadingScreen/>:<NavigationSelector isLoggedIn={isLoggedIn} />}
-    </NavigationContainer>
+  const loadingProcesses:LoadingProcess[] = [
+    {name:'checkIfLoggedIn',isReady:checkIfLoggedIn.loginStatus === LoadingProcessStatus.isReady},
+    {name:'loadExistingUserData', isReady:getUserData.loadDataStatus === LoadingProcessStatus.isReady}
+  ];
+
+  return(
+    <AppLoader
+      loadingComponent={<LoadingScreen loadingUserDataStatus={checkIfLoggedIn.loginStatus} loginStatus={getUserData.loadDataStatus}/>}
+      minimumLoadingTime={5000}
+      mandatoryProcesses={loadingProcesses}>
+      <NavigationContainer theme={isLightTheme ? MyLightTheme : MyDarkTheme}>
+        <NavigationSelector isLoggedIn={isLoggedIn}/>
+      </NavigationContainer>
+    </AppLoader>
+
   );
 };
 
