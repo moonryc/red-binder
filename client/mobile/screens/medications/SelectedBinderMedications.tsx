@@ -25,8 +25,8 @@ export const SelectedBinderMedications = () => {
   const hasMedications = binders && binders[selectedBinderIndex] && binders[selectedBinderIndex].medications.length > 0;
 
   const onPress = (medication:IMedication) => {
-    console.log(medication);
-    navigate('SelectedMedication', medication.name,{medication});
+    const selectedMedication = {...medication,next_refill:medication.next_refill.toString()};
+    navigate('SelectedMedication', medication.name,{medication:selectedMedication});
   };
 
   return (
