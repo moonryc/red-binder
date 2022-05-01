@@ -1,10 +1,10 @@
 import {
   createAccount,
   createBinder,
-  createMedication,
+  createMedication, deleteMedication,
   destroyBinder,
   getAllBindersByAccountId,
-  loginAccount, updateRefillDate
+  loginAccount, updateMedication, updateRefillDate
 } from '../controllers';
 import { GraphQLUpload } from 'graphql-upload';
 
@@ -19,6 +19,8 @@ export const resolvers = {
     createBinder:createBinder,
     createMedication:createMedication,
     destroyBinder:destroyBinder,
-    updateRefillDate:updateRefillDate
+    updateRefillDate:updateRefillDate,
+    updateMedication:updateMedication,
+    deleteMedication:deleteMedication
   },
 };

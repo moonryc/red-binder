@@ -23,7 +23,9 @@ export const getAllBindersByAccountId = async (_:any, __:any, token :AccountBody
 
     for(let index =0; index<tempBinderWithPhotos.length;index++){
       //todo make this async
-      tempBinderWithPhotos[index].image = base64_encode(path.join(__dirname,`../uploads/images/${tempBinderWithPhotos[index].image}`));
+      if(tempBinderWithPhotos[index].image){
+        tempBinderWithPhotos[index].image = base64_encode(path.join(__dirname,`../uploads/images/${tempBinderWithPhotos[index].image}`));
+      }
     }
     return { binders:tempBinderWithPhotos};
   } catch (e) {
@@ -49,7 +51,7 @@ export const getOneBinderByBinderId = async (_:any,{ id }:{id:string}) => {
 interface CreateBinderBody {
   name:string,
   color:string,
-  image:IUpload,
+  image?:IUpload,
   // image:any,
   birthDate:string
 }
@@ -60,14 +62,19 @@ export const createBinder = async (_:any,body:CreateBinderBody,token:AccountBody
     throw new AuthenticationError('You are not logged in');
   }
   try{
-    const {image,...rest} = body;
+    let newBinderDocument = null;
+    if(body?.image){
+      const {image,...rest} = body;
 
-    const imageName = await uploadImage(image);
+      const imageName = await uploadImage(image);
 
-    if(!imageName){
-      throw Error('image was not saved successfully');
+      if(!imageName){
+        throw Error('image was not saved successfully');
+      }
+      newBinderDocument = await Binder.create({ ...body, image: imageName});
+    }else{
+      newBinderDocument = await Binder.create({...body});
     }
-    const newBinderDocument = await Binder.create({ ...body, image: imageName});
     if(!newBinderDocument){
       throw Error('error creating user');
     }
