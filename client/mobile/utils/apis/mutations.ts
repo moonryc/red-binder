@@ -23,7 +23,7 @@ export const CREATE_MEDICATION = gql`
 `;
 
 export const CREATE_BINDER = gql`
-    mutation CreateBinder($name: String!, $color: String!, $image: Upload!, $birthDate: String!) {
+    mutation CreateBinder($name: String!, $color: String!, $image: Upload, $birthDate: String!) {
         createBinder(name: $name, color: $color, image: $image, birthDate: $birthDate) {
             token
         }
@@ -45,3 +45,18 @@ export const UPDATE_REFILL_DATE = gql`
     }
 `;
 
+export const UPDATE_MEDICATION = gql`
+    mutation UpdateMedication($medicationId:ID!,$name: String!, $bottle_dosage_amount: Float!, $bottle_dosage_measurement: String!, $next_refill: String!, $notes: String) {
+        updateMedication(medicationId:$medicationId,name: $name, bottle_dosage_amount: $bottle_dosage_amount, bottle_dosage_measurement: $bottle_dosage_measurement, next_refill: $next_refill, notes: $notes) {
+            token
+        }
+    }
+`;
+
+export const DELETE_MEDICATION = gql`
+    mutation DeleteMedication($medicationId:ID!) {
+        deleteMedication(medicationId:$medicationId) {
+            token
+        }
+    }
+`;
