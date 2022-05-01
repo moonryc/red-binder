@@ -1,6 +1,5 @@
 export * from './BindersScreen';
 export * from '../medications/MedicationCreateEditScreen';
-export * from '../medications/MedicationSelectedScreen';
 export * from './SelectedBinderEditScreen';
 export * from './SelectedBinderMedicalHistoryScreen';
 export * from './SelectedBinderMedicationInteractions';
