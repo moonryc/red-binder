@@ -8,10 +8,11 @@ import { useApplicationContext } from '../../context/GlobalState';
 import { UPDATE_SELECTED_BINDER_INDEX } from '../../context/actions';
 import { useCustomTheme, useSimpleNavigation } from '../../hooks';
 import fallbackImage from '../../assets/icon.png';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface props {
   binderOwner:{
-    image:string,
+    image?:string,
     name:string,
     color:string,
     _id:string
@@ -55,15 +56,21 @@ export const BinderItem:React.FC<props> = ({binderOwner:{image,name,color,_id},b
   const onPress = () => {
     //@ts-ignore
     dispatch({type:UPDATE_SELECTED_BINDER_INDEX,value:binderIndex});
-    navigate('SelectedBinder',name,{_id,image});
+    navigate('SelectedBinder',name,{_id,image,color});
   };
 
   return (
     <Pressable onPressIn={()=>setIsPressed(true)} onPressOut={()=>setIsPressed(false)} onPress={()=> onPress()}>
       <View style={styles.container}>
-        <Image
+        {image ===null && <MaterialCommunityIcons name={'account-circle-outline'} color={color} size={50}/>}
+        {image !== null && <Image
           style={styles.binderIcon}
           source={{uri:image?`data:image/png;base64,${image}`:fallbackImage}}/>
+        }
+
+
+
+
         <Text style={styles.text} numberOfLines={1}>
           {name}
         </Text>

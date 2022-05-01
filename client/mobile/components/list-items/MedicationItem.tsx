@@ -6,7 +6,7 @@ import { useCustomTheme } from '../../hooks';
 
 interface props {
   medicationName:string
-  onPress?:Function
+  onPress?:Function,
 }
 
 
