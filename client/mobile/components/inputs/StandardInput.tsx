@@ -7,6 +7,10 @@ import { useCustomTheme } from '../../hooks';
 interface IStandardButton {
   [x:string]:any,
   onPress?:Function,
+  // onChangeText?(e:any):
+  value?:string,
+  containerStyle?:Object,
+  editable?:boolean
   keyboardType?: 'default'|
   'number-pad'|
   'decimal-pad'|
@@ -17,7 +21,7 @@ interface IStandardButton {
 }
 
 
-export const StandardInput:React.FC<IStandardButton> = ({fontSize,onPress,...props}) => {
+export const StandardInput:React.FC<IStandardButton> = ({containerStyle, fontSize,onPress,value, editable=true,...props}) => {
 
 
   const colors = useCustomTheme();
@@ -33,11 +37,6 @@ export const StandardInput:React.FC<IStandardButton> = ({fontSize,onPress,...pro
       borderRadius: 9999,
       backgroundColor: colors.primaryDark,
     },
-    inputContainer:{
-      // borderBottomWidth:1,
-      // paddingLeft:10,
-      width:'100%'
-    },
     input:{
       color:colors.text,
       paddingLeft:5,
@@ -48,8 +47,8 @@ export const StandardInput:React.FC<IStandardButton> = ({fontSize,onPress,...pro
 
 
   return (
-    <View style={styles.container}>
-      <TextInput onPressIn={(e)=>onPress?.(e)} allowFontScaling={true} placeholderTextColor={colors.background} style={styles.input} underlineColorAndroid={styles.input.color} {...props} />
+    <View style={[styles.container,containerStyle]}>
+      <TextInput editable={editable} selectTextOnFocus={editable} value={value} onPressIn={(e)=>onPress?.(e)} allowFontScaling={true} placeholderTextColor={colors.background} style={styles.input} underlineColorAndroid={styles.input.color} {...props} />
     </View>
   );
 };
