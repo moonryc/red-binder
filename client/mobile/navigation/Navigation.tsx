@@ -115,8 +115,13 @@ export const Navigation = () => {
 
   return(
     <AppLoader
-      loadingComponent={<LoadingScreen loadingUserDataStatus={checkIfLoggedIn.loginStatus} loginStatus={getUserData.loadDataStatus}/>}
-      minimumLoadingTime={5000}
+      loadingComponent={
+        <LoadingScreen
+          loadingUserDataStatus={checkIfLoggedIn.loginStatus}
+          loginStatus={getUserData.loadDataStatus}
+        />
+      }
+      minimumLoadingTime={1000}
       mandatoryProcesses={loadingProcesses}>
       <NavigationContainer theme={isLightTheme ? MyLightTheme : MyDarkTheme}>
         <NavigationSelector isLoggedIn={isLoggedIn}/>

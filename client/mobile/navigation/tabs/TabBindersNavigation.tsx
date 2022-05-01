@@ -3,7 +3,6 @@ import {
   BinderScreen,
   CreateBinderScreen,
   MedicationCreateEditScreen,
-  MedicationSelectedScreen,
   SelectedBinderEditScreen,
   SelectedBinderMedicalHistoryScreen,
   SelectedBinderMedicationInteractions,
@@ -19,7 +18,6 @@ import CreateMedicalHistoryScreen from '../../screens/binders/CreateMedicalHisto
 export interface BinderStackParamList extends ParamListBase{
   BindersHome: undefined,
   CreateMedication: undefined,
-  SelectedMedication: undefined,
   CreateBinder: undefined,
   SelectedBinder: undefined,
   EditBinder: undefined,
@@ -40,8 +38,6 @@ export const TabBindersNavigation = ({ navigationOptionStyle }) => {
       <BindersStack.Navigator initialRouteName={'BindersHome'}>
         <BindersStack.Screen name={'BindersHome'} component={BinderScreen} options={navigationOptionStyle} />
         <BindersStack.Screen name={'CreateMedication'} component={MedicationCreateEditScreen}
-          options={navigationOptionStyle} />
-        <BindersStack.Screen name={'SelectedMedication'} component={MedicationSelectedScreen}
           options={navigationOptionStyle} />
         <BindersStack.Screen name={'CreateBinder'} component={CreateBinderScreen} options={navigationOptionStyle} />
         <BindersStack.Screen name={'SelectedBinder'} component={SelectedBinderScreen}
