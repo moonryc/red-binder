@@ -3,7 +3,6 @@ import { useLayoutEffect } from 'react';
 
 type typeDestination = 'BindersHome'
   | 'CreateMedication'
-  | 'SelectedMedication'
   | 'CreateBinder'
   | 'SelectedBinder'
   | 'EditBinder'
