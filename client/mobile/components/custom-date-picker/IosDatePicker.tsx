@@ -3,13 +3,14 @@ import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import { useCustomTheme } from '../../hooks';
 import CustomPicker from '../custom-picker/CustomPicker';
-import { getDaysInMonth, getMonth, getYear } from 'date-fns';
+import { getDate, getDaysInMonth, getMonth, getYear } from 'date-fns';
 import CustomPickerItem from '../custom-picker/CustomPickerItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IosDateOption from './IosDateOption';
 
 interface props {
-  updateBirthdate:Function,
+  updateDate:Function,
+  initialDate: Date
 }
 
 interface IinitialState {
@@ -20,15 +21,6 @@ interface IinitialState {
   day:number,
   year:number
 }
-
-const initialState = {
-  isDayPickerOpen:false,
-  isMonthPickerOpen:false,
-  isYearPickerOpen:false,
-  month:getMonth(new Date()),
-  day:1,
-  year:getYear(new Date())
-};
 
 interface IAction{
   type:'updateMonth'|'updateDay'|'updateYear'|'toggleMonth'|'toggleDay'|'toggleYear',
@@ -62,14 +54,23 @@ const reducer = (state:IinitialState,{type,value}:IAction):IinitialState => {
 
 
 
-const IosDatePicker:React.FC<props> = ({updateBirthdate}) => {
+const IosDatePicker:React.FC<props> = ({updateDate,initialDate}) => {
+
+  const initialState = {
+    isDayPickerOpen:false,
+    isMonthPickerOpen:false,
+    isYearPickerOpen:false,
+    month:getMonth(initialDate),
+    day:getDate(initialDate),
+    year:getYear(initialDate)
+  };
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {day, year, month, isDayPickerOpen, isMonthPickerOpen, isYearPickerOpen} = state;
 
   useEffect(() => {
-    updateBirthdate(new Date(year,month,day));
-  }, [day, year, month, updateBirthdate]);
+    updateDate(new Date(year,month,day));
+  }, [day, year, month, updateDate]);
 
 
 
