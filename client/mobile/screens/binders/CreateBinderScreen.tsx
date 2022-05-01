@@ -1,13 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import { Image, NativeSyntheticEvent, NativeTouchEvent, Platform, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useReducer } from 'react';
+import { Image, NativeSyntheticEvent, NativeTouchEvent, Platform, StyleSheet, Text, View } from 'react-native';
 import { StandardButton } from '../../components/buttons/StandardButton';
-import { useTailwind } from 'tailwind-rn';
 import * as ImagePicker from 'expo-image-picker';
 import fallbackImage from '../../assets/icon.png';
 import { StandardInput } from '../../components/inputs/StandardInput';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { BinderStackParamList } from '../../navigation';
-import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@apollo/client';
 import { CREATE_BINDER, GET_ALL_BINDERS } from '../../utils/apis';
 import { apolloErrorHandler } from '../../utils';
@@ -21,25 +17,14 @@ import CustomPicker from '../../components/custom-picker/CustomPicker';
 import CustomPickerItem from '../../components/custom-picker/CustomPickerItem';
 import AndroidDatePicker from '../../components/custom-date-picker/AndroidDatePicker';
 import IosDatePicker from '../../components/custom-date-picker/IosDatePicker';
+import { useSimpleNavigation } from '../../hooks';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'CreateBinder'>;
-
-const launchCameraCommon = async () => {
-  return await ImagePicker.launchCameraAsync({
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
-};
-
-
-
-
-const maxWidth = 1200;
-const maxHeight = 1200;
 
 // Width > maxWidth of 1200 then resize width to 1200
 export const manipImage = async (uri: any, width: number, height: number) => {
+  const maxWidth = 1200;
+  const maxHeight = 1200;
   const resWidth = width > maxWidth ? maxWidth : width;
   const resHeight = height > maxHeight ? maxHeight : height;
   let res =
@@ -52,22 +37,13 @@ export const manipImage = async (uri: any, width: number, height: number) => {
         compress: 1,
         base64: true,
       });
-
-  // alert('Raw: ' + width + ' x ' + height);
-  // alert('Capped: ' + resWidth + ' x ' + resHeight);
-  // alert('Resized: ' + res.width + ' x ' + res.height);
   return res;
 };
-
-
-const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
-function generateRNFile(uri:any, name:any) {
-  return uri ? new ReactNativeFile({
-    uri,
-    type: mime.lookup(uri) || 'image',
-    name,
-  }) : null;
-}
+const generateRNFile = (uri:any, name:any) => uri ? new ReactNativeFile({
+  uri,
+  type: mime.lookup(uri) || 'image',
+  name,
+}) : null;
 
 interface IInitialState {
   name:string,
@@ -76,29 +52,28 @@ interface IInitialState {
   birthDate: Date,
   isDatePickerOpen:boolean,
   isColorPickerOpen:boolean
+  errorMessage:string
 }
-
+interface IAction {
+  type:'updateName'|'updateColor'|'updateImage'|'updateBirthDate'|'toggleDatePicker'|'toggleColorPicker'|'updateErrorMessage',
+  value?:string|null|Date|ReactNativeFile,
+}
+const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
 const initialState:IInitialState = {
   name:'',
   color:colors[0],
   image:null,
   birthDate: new Date(),
   isDatePickerOpen:false,
-  isColorPickerOpen:false
+  isColorPickerOpen:false,
+  errorMessage:''
 };
 
-interface IAction {
-  type:'updateName'|'updateColor'|'updateImage'|'updateBirthDate'|'toggleDatePicker'|'toggleColorPicker',
-  value?:string|null|Date|ReactNativeFile,
-}
-
 const reducer = (state:IInitialState,{type,value}:IAction):IInitialState => {
-  console.log('type : ' + type);
   switch (type) {
   case 'updateName':
     return { ...state, name: value as string};
   case 'updateColor':
-    console.log(value);
     return { ...state, color: value as string, isColorPickerOpen: false};
   case 'updateImage':
     return { ...state, image: value as string};
@@ -114,68 +89,51 @@ const reducer = (state:IInitialState,{type,value}:IAction):IInitialState => {
     return state;
   case 'toggleColorPicker':
     return {...state, isColorPickerOpen:!state.isColorPickerOpen};
+  case 'updateErrorMessage':
+    return {...state, errorMessage:value as string};
   default:
     return state;
   }
 };
 
+const styles = StyleSheet.create({
+  container: {display:'flex', alignItems:'center'},
+  birthdayContainer: {display:'flex', alignItems:'center', flexDirection:'column', justifyContent:'center'},
+  nameInput: { borderWidth: 1, height: 40, width: '30%', margin: 0, borderRadius: 15 },
+  birthdayInput: { borderWidth: 1, height: 40, width: '30%', margin: 0 },
+  binderIcon: { display:'flex', justifyContent: 'center', width: 100, height: 100, borderRadius: 100/2 },
+  text: {display:'flex', flex:1, textAlign:'center'}
+});
 
 export const CreateBinderScreen = () => {
 
-  const navigation = useNavigation<binderScreenProp>();
 
-  const tailwind = useTailwind();
-  const styles = useMemo(()=>({
-    container: tailwind('flex items-center'),
-    birthdayContainer: tailwind('flex items-center flex-col justify-center'),
-    nameInput: { borderWidth: 1, height: 40, width: '30%', margin: 0, borderRadius: 15 },
-    birthdayInput: { borderWidth: 1, height: 40, width: '30%', margin: 0 },
-    binderIcon: { ...tailwind('flex rounded-full justify-center'), width: 100, height: 100 },
-    text: tailwind('flex-1 text-xl ml-4')
-  }) as const,[tailwind]);
-
-  const isMountedRef = useRef(false);
+  const {navigate} = useSimpleNavigation();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const {color, image, birthDate, isDatePickerOpen,name, isColorPickerOpen} = state;
+  const {color, image, birthDate, isDatePickerOpen,name, isColorPickerOpen, errorMessage} = state;
   const [submitBinderApi,{error,loading,reset}]= useMutation(CREATE_BINDER,{
     refetchQueries:[GET_ALL_BINDERS]
   });
 
-  useEffect(()=>{
-    console.log(state);
-  },[state]);
-
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  const onColorChange = useCallback((itemValue:ItemValue)=>{
-    if(!isMountedRef.current){
-      return;
-    }
-    dispatch({ type: 'updateColor', value: itemValue as string });
-  },[isMountedRef]);
 
   const submitBinder = useCallback(async () => {
+    if(!name){
+      dispatch({type:'updateErrorMessage',value:'Name is required'});
+      return;
+    }
     try{
       reset();
       const file = generateRNFile(image,`picture-${Date.now()}`);
       const {data}= await submitBinderApi({ variables: {name,color,image:file,birthDate}});
-      if(error){
-        console.log('THIS IS AN ERROR ' + error);
-      }
       reset();
-      navigation.navigate('BindersHome');
+      navigate('BindersHome');
     }catch (e) {
       if(error){
         apolloErrorHandler(error);
       }
       console.log(e);
     }
-  },[reset, image, submitBinderApi, name, color, birthDate, error, navigation]);
+  },[name, reset, image, submitBinderApi, color, birthDate, navigate, error]);
 
   const pickImage = useCallback(async () => {
     // let result = await launchCameraCommon();
@@ -213,7 +171,6 @@ export const CreateBinderScreen = () => {
     let localUri = result.uri;
     let filename = localUri.split('/').pop();
     // Infer the type of the image
-    alert('New Size: ' + fileSize);
     if (filename) {
       let match = /\.(\w+)$/.exec(filename);
       let type = match ? `image/${match[1]}` : 'image';
@@ -221,47 +178,39 @@ export const CreateBinderScreen = () => {
     }
 
   },[]);
-
+  const onColorChange = useCallback((itemValue:ItemValue)=>{
+    dispatch({ type: 'updateColor', value: itemValue as string });
+  },[]);
   const updateAndroidBirthdate = useCallback((_:any, selectedDate:Date|undefined) => {
-    console.log('update android birthdate ran');
     if(selectedDate === undefined){
       dispatch({type:'toggleDatePicker'});
       return;
     }
     dispatch({type:'updateBirthDate',value: selectedDate});
   },[]);
-
-  const updateIosBirthdate = useCallback((_:any, selectedDate:Date|undefined) => {
-    console.log('update Ios birthdate ran');
-    if(selectedDate === undefined){
-      return;
-    }
+  const updateIosBirthdate = useCallback((_:any, selectedDate:Date) => {
     dispatch({type:'updateBirthDate',value: selectedDate});
   },[]);
-
   const showDatepicker = useCallback((e:NativeSyntheticEvent<NativeTouchEvent>) => {
-    console.log('show datepicker ran');
-    // e.preventDefault();
     dispatch({type:'toggleDatePicker'});
   },[]);
-
   const toggleColorPicker = useCallback(
     () => {
       dispatch({type:'toggleColorPicker'});
     },[]);
 
   useEffect(() => {
-    console.log(state);
-  }, [state]);
-
+    dispatch({type:'updateErrorMessage',value:''});
+  }, [name]);
 
 
   return (
     <CustomScrollableView>
       <View style={styles.container}>
-        <Image
+        {image ===null && <MaterialCommunityIcons name={'account-circle-outline'} color={color} size={100}/>}
+        {image !== null && <Image
           style={styles.binderIcon}
-          source={image ? { uri: image } : fallbackImage}></Image>
+          source={image ? { uri: image } : fallbackImage}/>}
       </View>
       <StandardButton onPress={() => pickImage()}>Set Binder Photo</StandardButton>
       <StandardInput placeholder={'Person\'s Name'}
@@ -272,15 +221,16 @@ export const CreateBinderScreen = () => {
         dateValue={birthDate}
         toggleDatePicker={showDatepicker}
         updateDate={updateAndroidBirthdate} />
-      {Platform.OS === 'ios' && <IosDatePicker updateBirthdate={updateIosBirthdate}/>}
+      {Platform.OS === 'ios' && <IosDatePicker updateDate={updateIosBirthdate} initialDate={new Date()}/>}
       <CustomPicker isPickerOpen={isColorPickerOpen} closeCustomPicker={toggleColorPicker} title={'Colors'} onSelectValue={onColorChange}>
         {colors.map((color,index)=>(
           <CustomPickerItem value={color} key={index}/>
         ))}
       </CustomPicker>
 
-      <Text>{error ? `An error occurred please Try Again ${error.message}` : ''}</Text>
-      <StandardButton loading={loading} onPress={() => submitBinder()}>
+      {(errorMessage !== '') && <Text style={styles.text}>{errorMessage as string}</Text>}
+      {error && <Text style={styles.text}>{error.message} </Text>}
+      <StandardButton disabled={errorMessage !==''} loading={loading} onPress={() => submitBinder()}>
           Create Binder
       </StandardButton>
     </CustomScrollableView>

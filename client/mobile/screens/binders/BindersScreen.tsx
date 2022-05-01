@@ -11,7 +11,7 @@ import { GET_ALL_BINDERS } from '../../utils/apis';
 import { StatusBar } from 'expo-status-bar';
 import CustomScrollableView from '../../components/misc/CustomScrollableView';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useCustomTheme } from '../../hooks';
+import { useCustomTheme, useSimpleNavigation } from '../../hooks';
 
 type binderScreenProp = NativeStackNavigationProp<BinderStackParamList, 'BindersHome'>;
 
@@ -33,7 +33,7 @@ export const BinderScreen = () => {
         <MaterialCommunityIcons name={'plus-circle-outline'} color={colors.primaryDark} size={26} onPress={()=>navigation.navigate('CreateBinder')}/>
       ),
     });
-  }, [colors.primaryDark, navigation]);
+  }, [colors.primaryDark, navigation,binders]);
 
 
 
