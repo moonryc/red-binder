@@ -181,23 +181,19 @@ export const CreateBinderScreen = () => {
   const onColorChange = useCallback((itemValue:ItemValue)=>{
     dispatch({ type: 'updateColor', value: itemValue as string });
   },[]);
-  const updateAndroidBirthdate = useCallback((_:any, selectedDate:Date|undefined) => {
-    if(selectedDate === undefined){
+  const updateBirthdate = useCallback((selectedDate:Date|undefined) => {
+    if(selectedDate === undefined && Platform.OS==='android'){
       dispatch({type:'toggleDatePicker'});
       return;
     }
     dispatch({type:'updateBirthDate',value: selectedDate});
   },[]);
-  const updateIosBirthdate = useCallback((_:any, selectedDate:Date) => {
-    dispatch({type:'updateBirthDate',value: selectedDate});
-  },[]);
   const showDatepicker = useCallback((e:NativeSyntheticEvent<NativeTouchEvent>) => {
     dispatch({type:'toggleDatePicker'});
   },[]);
-  const toggleColorPicker = useCallback(
-    () => {
-      dispatch({type:'toggleColorPicker'});
-    },[]);
+  const toggleColorPicker = useCallback(() => {
+    dispatch({type:'toggleColorPicker'});
+  },[]);
 
   useEffect(() => {
     dispatch({type:'updateErrorMessage',value:''});
@@ -219,9 +215,10 @@ export const CreateBinderScreen = () => {
       <AndroidDatePicker
         isDatePickerOpen={isDatePickerOpen}
         dateValue={birthDate}
+        prefix={'Birthdate: '}
         toggleDatePicker={showDatepicker}
-        updateDate={updateAndroidBirthdate} />
-      {Platform.OS === 'ios' && <IosDatePicker updateDate={updateIosBirthdate} initialDate={new Date()}/>}
+        updateDate={updateBirthdate} />
+      {Platform.OS === 'ios' && <IosDatePicker updateDate={updateBirthdate} initialDate={new Date()} title={'Birthdate: '}/>}
       <CustomPicker isPickerOpen={isColorPickerOpen} closeCustomPicker={toggleColorPicker} title={'Colors'} onSelectValue={onColorChange}>
         {colors.map((color,index)=>(
           <CustomPickerItem value={color} key={index}/>

@@ -9,15 +9,16 @@ interface props {
   isDatePickerOpen:boolean,
   dateValue:Date,
   toggleDatePicker:Function,
-  updateDate(_:any,newDate:Date|undefined):void
+  updateDate(newDate:Date|undefined):void,
+  prefix?: string
 }
 
-const AndroidDatePicker:React.FC<props> = ({isDatePickerOpen,dateValue,toggleDatePicker,updateDate}) => {
+const AndroidDatePicker:React.FC<props> = ({isDatePickerOpen,dateValue,toggleDatePicker,updateDate, prefix=''}) => {
   return (
     <>
       {Platform.OS === 'android' && <View>
         <Pressable onPressIn={()=>toggleDatePicker()}>
-          <StandardInput editable={false} selectTextOnFocus={false} value={`Birthday: ${format(dateValue,'dd/MM/yyyy')} `}/>
+          <StandardInput editable={false} selectTextOnFocus={false} value={`${prefix}${format(dateValue,'dd/MM/yyyy')}`}/>
         </Pressable>
       </View>
       }
@@ -25,7 +26,7 @@ const AndroidDatePicker:React.FC<props> = ({isDatePickerOpen,dateValue,toggleDat
         testID="dateTimePicker"
         value={dateValue}
         mode={'date'}
-        onChange={updateDate}
+        onChange={(_:any,date:Date|undefined)=>updateDate(date)}
       />}
     </>
   );

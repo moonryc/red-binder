@@ -157,8 +157,10 @@ export const MedicationCreateEditScreen = () => {
     }
   }, [deleteMedication, params.id, navigate, deleteError]);
 
-  const dateUpdate = useCallback((_:any,selectedDate:Date|undefined|null):void => {
-    dispatch({type:'toggleDatePicker'});
+  const dateUpdate = useCallback((selectedDate:Date|undefined|null):void => {
+    if(Platform.OS==='android'){
+      dispatch({type:'toggleDatePicker'});
+    }
     if(selectedDate){
       dispatch({ type: 'nextRefill', value: selectedDate });
     }
@@ -174,9 +176,7 @@ export const MedicationCreateEditScreen = () => {
   const handlePickerChange = useCallback((value:string) => {
     dispatch({type:'bottleDosageMeasurement',value});
   }, []);
-  const updateIosBirthdate = useCallback((_:any, selectedDate:Date) => {
-    dispatch({type:'nextRefill',value: selectedDate});
-  },[]);
+
 
   return (
     <CustomScrollableView>
@@ -193,11 +193,12 @@ export const MedicationCreateEditScreen = () => {
         </View>
       </View>
       {Platform.OS === 'android' && <AndroidDatePicker
+        prefix={'Next Refill: '}
         isDatePickerOpen={isDatePickerOpen}
         dateValue={next_refill as Date}
         toggleDatePicker={showDatePicker}
         updateDate={dateUpdate}/>}
-      {Platform.OS === 'ios' && <IosDatePicker updateDate={updateIosBirthdate} initialDate={next_refill as Date}/>}
+      {Platform.OS === 'ios' && <IosDatePicker title={'Next Refill:'} updateDate={dateUpdate} initialDate={next_refill as Date}/>}
       <StandardInput multiline={true} placeholder={'Notes'} value={notes as string}
         onChangeText={(text: string) => dispatch({ type:'notes', value: text })} />
       {!edit &&(<StandardButton disabled={createLoading} loading={createLoading}

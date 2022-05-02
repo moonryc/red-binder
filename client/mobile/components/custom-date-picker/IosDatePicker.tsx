@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 
 import { Platform, Pressable, Text, View } from 'react-native';
 import { useCustomTheme } from '../../hooks';
@@ -7,10 +7,12 @@ import { getDate, getDaysInMonth, getMonth, getYear } from 'date-fns';
 import CustomPickerItem from '../custom-picker/CustomPickerItem';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import IosDateOption from './IosDateOption';
+import { useEffectDebugger } from '../../hooks/useEffectDebugger';
 
 interface props {
   updateDate:Function,
-  initialDate: Date
+  initialDate?: Date,
+  title:string
 }
 
 interface IinitialState {
@@ -54,50 +56,50 @@ const reducer = (state:IinitialState,{type,value}:IAction):IinitialState => {
 
 
 
-const IosDatePicker:React.FC<props> = ({updateDate,initialDate}) => {
+const IosDatePicker:React.FC<props> = ({updateDate,initialDate,title}) => {
 
-  const initialState = {
+  const initialState = useMemo(()=>({
     isDayPickerOpen:false,
     isMonthPickerOpen:false,
     isYearPickerOpen:false,
-    month:getMonth(initialDate),
-    day:getDate(initialDate),
-    year:getYear(initialDate)
-  };
+    month:getMonth(new Date()),
+    day:getDate(new Date()),
+    year:getYear(new Date())
+  }),[]);
+
+  if(initialDate !== undefined){
+    initialState.month = getMonth(initialDate);
+    initialState.day = getDate(initialDate);
+    initialState.year = getYear(initialDate);
+  }
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const {day, year, month, isDayPickerOpen, isMonthPickerOpen, isYearPickerOpen} = state;
 
+
   useEffect(() => {
     updateDate(new Date(year,month,day));
+    console.log('this ran');
   }, [day, year, month, updateDate]);
-
-
 
   const colors = useCustomTheme();
 
   const styles = useMemo(()=>({
     container:{
       display:'flex',
-      flex:1,
-      marginTop:20
+      // flex:1,
+      // marginTop:20
     },
     iosDateOptionsContainer: {
       display:'flex',
-      // justifyContent:'space-around',
       justifyContent:'space-between',
       flexDirection: 'row',
       alignItems:'center',
-      // marginTop: 10,
       marginBottom: 10,
       marginRight:30,
       marginLeft:30,
-      // paddingLeft:15,
-      // paddingRight:15,
-      // paddingTop:20,
       paddingBottom:20,
       borderRadius: 9999
-      // backgroundColor: colors.primaryDark
     },
     text:{
       marginLeft:30,
@@ -106,7 +108,7 @@ const IosDatePicker:React.FC<props> = ({updateDate,initialDate}) => {
       textAlign:'left',
       fontWeight:'bold'
     },
-  } as const),[colors.primaryDark, colors.text]) ;
+  } as const),[colors.primaryDark]) ;
 
   const toggleDay = useCallback(() => {
     dispatch({type:'toggleDay'});
@@ -140,7 +142,7 @@ const IosDatePicker:React.FC<props> = ({updateDate,initialDate}) => {
         <>
           <View style={styles.container}>
 
-            <Text style={styles.text}>Birthdate:</Text>
+            <Text style={styles.text}>{title}</Text>
 
             <View style={styles.iosDateOptionsContainer}>
               <IosDateOption toggleOption={toggleDay} value={day}/>
@@ -170,4 +172,4 @@ const IosDatePicker:React.FC<props> = ({updateDate,initialDate}) => {
   );
 };
 
-export default IosDatePicker;
+export default React.memo(IosDatePicker);
