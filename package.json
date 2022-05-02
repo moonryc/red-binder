@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "cd backend && yarn && cd ../client/mobile && yarn && cd ../web && yarn",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "npm install --global yarn && cd backend && yarn && cd ../client/mobile && yarn && cd ../web && yarn && yarn global add expo-cli",
     "development": "concurrently \"cd backend && npm run devStart\" \"cd client && cd mobile && npm start\""
   },
   "repository": {
