@@ -1,19 +1,14 @@
 import React, { useMemo, useState } from 'react';
-
 import {
   Pressable,
   Text,
   useWindowDimensions, View
 } from 'react-native';
-import { useTailwind } from 'tailwind-rn';
-
-
 import { useCustomTheme } from '../../../hooks';
 import { getDate } from 'date-fns';
 import { ICalendarDay } from '../../../types/calendar';
 import { useApplicationContext } from '../../../context/GlobalState';
 import { SET_SELECTED_DAY } from '../../../context/actions';
-import { useCustomStyles } from './useCustomStyles';
 
 
 const CalendarDay:React.FC<ICalendarDay> = ({isFillerDay=false,isToday=false,isMissedDosage=false,isRefill,date=new Date(),onPress=null}) => {
@@ -21,19 +16,21 @@ const CalendarDay:React.FC<ICalendarDay> = ({isFillerDay=false,isToday=false,isM
   const {width} = useWindowDimensions();
   const {dispatch} =useApplicationContext();
   const [isPressed, setIsPressed] = useState(false);
+
+
   const styles = useMemo(()=>({
     dayContainer:{
       width:1/9 *width,
       height: 1/9*width,
       borderRadius:(1/7*width)/2,
       justifyContent:'center',
-      backgroundColor: isFillerDay ? colors.paper: isPressed ? colors.primaryBar :colors.primaryLight,
+      backgroundColor: isFillerDay ? colors.standardCalendarDay: isPressed ? colors.standardCalendarDayPressed : colors.standardCalendarDay,
     },
     refill:{
       backgroundColor: isRefill ? isPressed ? colors.refillPressed :colors.refill:'',
     },
     today:{
-      backgroundColor: isToday ? isPressed ? colors.refillPressed :colors.primary:'',
+      backgroundColor: isToday ? isPressed ? colors.refillPressed :colors.todayCalendarDay:'',
     },
     text:{
       color:colors.calendarText,
@@ -41,7 +38,7 @@ const CalendarDay:React.FC<ICalendarDay> = ({isFillerDay=false,isToday=false,isM
       fontSize:22,
       textAlign:'center',
     }
-  }as const),[colors.calendarText, colors.paper, colors.primary, colors.primaryBar, colors.primaryLight, colors.refill, colors.refillPressed, isFillerDay, isPressed, isRefill, isToday, width]);
+  }as const),[colors.calendarText, colors.refill, colors.refillPressed, colors.standardCalendarDay, colors.standardCalendarDayPressed, colors.todayCalendarDay, isFillerDay, isPressed, isRefill, isToday, width]);
 
 
   if(isFillerDay){

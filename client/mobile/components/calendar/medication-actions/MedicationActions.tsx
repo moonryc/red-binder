@@ -27,8 +27,8 @@ const MedicationActions:React.FC<props> = ({actionType,medication,medicationName
       // marginLeft:30,
       paddingLeft:15,
       paddingRight:15,
-      paddingTop:20,
-      paddingBottom:20,
+      paddingTop:15,
+      paddingBottom:15,
       borderRadius: 9999,
       backgroundColor: isPressed ? colors.primaryLight:colors.primaryDark,
       width:'100%'

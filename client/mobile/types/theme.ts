@@ -25,10 +25,18 @@ export interface ThemeColors {
 
   paper:string,
   paperShadow:string
-  calendarText:string,
 
+
+  bottomTabIcon:string
+  bottomTabIconSelected:string
+
+  calendarText:string,
+  todayCalendarDay:string,
+  standardCalendarDay:string
+  standardCalendarDayPressed:string
   refill:string
   refillPressed:string
+
 }
 
 export type CustomTheme = {

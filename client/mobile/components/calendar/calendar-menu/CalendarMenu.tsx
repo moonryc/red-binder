@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useCustomTheme } from '../../../hooks';
 import { useApplicationContext } from '../../../context/GlobalState';
 import { isSameDay } from 'date-fns';
@@ -26,7 +26,7 @@ const CalendarMenu = () => {
       margin: 20,
       backgroundColor: colors.paper,
       borderRadius: 20,
-      padding: 35,
+      // padding: 15,
       alignItems: 'center',
       shadowColor: colors.paperShadow,
       shadowOffset: {
@@ -57,11 +57,11 @@ const CalendarMenu = () => {
           <Text>
             {selectedDate && selectedDate.toDateString()}
           </Text>
-          <View>
+          <ScrollView>
             {refillMedications.map(medication=>(
               <MedicationActions key={medication._id} actionType={'refill'} medicationName={medication.name} medication={medication} setOpenModel={setIsRefillModalOpen} setModalData={setModalData}/>
             ))}
-          </View>
+          </ScrollView>
 
         </View>
       </View>

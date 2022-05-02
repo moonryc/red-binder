@@ -37,10 +37,17 @@ const MyLightTheme:CustomTheme = {
 
     paper:'rgb(255, 255, 255)',
     paperShadow:'black',
-    calendarText:'#FFFFFF',
 
-    refill:'darkblue',
-    refillPressed:'blue'
+    bottomTabIcon:'',
+    bottomTabIconSelected:'',
+
+
+    calendarText:'#004d97',
+    todayCalendarDay:'#63cde7',
+    standardCalendarDay:'#ffffff',
+    standardCalendarDayPressed:'#003563',
+    refill:'#43a3fb',
+    refillPressed:'#003564'
 
 
   }
@@ -72,8 +79,15 @@ const MyDarkTheme:CustomTheme = {
 
     paper:'rgb(171,122,87)',
     paperShadow:'rgb(105,58,26)',
-    calendarText:'rgb(105,58,26)',
 
+
+    bottomTabIcon:'',
+    bottomTabIconSelected:'',
+
+    calendarText:'#693A1AFF',
+    todayCalendarDay:'#e7ab63',
+    standardCalendarDay:'#AB7A57FF',
+    standardCalendarDayPressed:'#693A1AFF',
     refill:'#998cec',
     refillPressed:'blue'
 

@@ -18,17 +18,17 @@ const NavButton: React.FC<INavButton> = ({ onPress, children }) => {
       justifyContent: 'center',
       flexDirection: 'row',
       alignItems:'center',
-      width: 60,
-      height: 60,
-      borderRadius: 60 / 2,
-      backgroundColor: isPressed ? colors.primaryLight : colors.primaryLight
+      width: 40,
+      height: 40,
+      borderRadius: 40 / 2,
+      backgroundColor: isPressed ? colors.standardCalendarDayPressed : colors.standardCalendarDay
     },
     text: {
       display:'flex',
       color: colors.text,
       textAlign: 'center'
     }
-  } as const), [colors.primaryLight, colors.text, isPressed]);
+  } as const), [colors.standardCalendarDay, colors.standardCalendarDayPressed, colors.text, isPressed]);
 
   return (
     <Pressable onPressIn={() => setIsPressed(true)} onPressOut={() => setIsPressed(false)} onPress={() => onPress()}>
@@ -57,8 +57,9 @@ const CalendarNav: React.FC<props> = ({ previousMonth, nextMonth, month, year })
       display: 'flex',
       width: '100%',
       flexDirection: 'row',
+      padding:15,
       alignItems: 'center',
-      justifyContent: 'space-around'
+      justifyContent: 'space-between'
     }
   } as const), []);
 
