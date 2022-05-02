@@ -1,11 +1,7 @@
-import React, { useReducer, useState } from 'react';
-import { Text } from 'react-native';
-import CalendarDay from '../day/CalendarDay';
-import { format, getMonth, isSameDay, parseISO } from 'date-fns';
+import React from 'react';
+import { getMonth, isSameDay } from 'date-fns';
 import { useApplicationContext } from '../../../context/GlobalState';
 import { useGetToday } from '../../../hooks/useGetToday';
-import { IMedication } from '../../../types';
-import SelectedCalendarDayModal from '../../modals/selected-calendar-day-modal/SelectedCalendarDayModal';
 import CalendarWeek from '../calendar-week/CalendarWeek';
 import { ICalendarDay } from '../../../types/calendar';
 
@@ -19,20 +15,31 @@ interface props {
   };
 }
 
+/**
+ * Breaks an array into smaller equal sized chunks
+ * @param myArray
+ * @param chunk_size
+ */
 const chunkArray=(myArray:any[], chunk_size:number)=>{
-  var index = 0;
-  var arrayLength = myArray.length;
-  var tempArray = [];
-
+  let index = 0;
+  let arrayLength = myArray.length;
+  let tempArray = [];
   for (index = 0; index < arrayLength; index += chunk_size) {
     const myChunk = myArray.slice(index, index+chunk_size);
     // Do something if you want with the group
     tempArray.push(myChunk);
   }
-
   return tempArray;
 };
 
+/**
+ * Renders a specified month
+ * @param numberOfDaysInMonth
+ * @param firstDayOfMonth
+ * @param year
+ * @param date
+ * @constructor
+ */
 const CalendarDays: React.FC<props> = ({
   selectedMonth: { numberOfDaysInMonth, firstDayOfMonth, year, date }
 }) => {

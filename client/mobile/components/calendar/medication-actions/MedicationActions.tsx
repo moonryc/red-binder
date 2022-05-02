@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useCustomTheme } from '../../../hooks';
 import { IMedication } from '../../../types';
 
@@ -12,19 +12,27 @@ interface props {
   setModalData:Function //TODO: ADD MORE IN THE FUTURE SUCH AS MISSED DOSAGES ETC
 }
 
-
+/**
+ * Handles how to return a medication action depending on the actionType
+ * @param actionType
+ * @param medication
+ * @param medicationName
+ * @param setOpenModel
+ * @param setModalData
+ * @constructor
+ */
 const MedicationActions:React.FC<props> = ({actionType,medication,medicationName,setOpenModel,setModalData}) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const colors = useCustomTheme();
-  const styles = useMemo(()=>({
+  const styles = useMemo(()=>StyleSheet.create({
     container: {
       display:'flex',
       justifyContent:'center',
       flexDirection: 'row',
       marginTop: 10,
       marginBottom: 10,
-      // marginRight:30,
-      // marginLeft:30,
+      // marginRight:50,
+      // marginLeft:10,
       paddingLeft:15,
       paddingRight:15,
       paddingTop:15,
@@ -37,8 +45,7 @@ const MedicationActions:React.FC<props> = ({actionType,medication,medicationName
       color:colors.text,
       textAlign:'center',
     }
-    //@ts-ignore
-  } as const),[colors.primaryDark, colors.primaryLight, colors.text, isPressed]) ;
+  }),[colors.primaryDark, colors.primaryLight, colors.text, isPressed]) ;
 
   const handleOpenRefillModel = useCallback(() => {
     setModalData(medication);
@@ -93,6 +100,7 @@ const MedicationActions:React.FC<props> = ({actionType,medication,medicationName
     );
   }
 
+  return(<></>);
 };
 
 export default MedicationActions;

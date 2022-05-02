@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useCustomTheme } from '../../../hooks';
@@ -9,11 +9,14 @@ import MedicationActions from '../medication-actions/MedicationActions';
 import RefillModal from '../../modals/refills-modal/RefillModal';
 
 
-
+/**
+ * Renders the Calendar Menu, shows the actions  that can be made for a particular day such as refilling a medication
+ * @constructor
+ */
 const CalendarMenu = () => {
 
   const colors= useCustomTheme();
-  const styles = StyleSheet.create({
+  const styles = useMemo(()=>StyleSheet.create({
     centeredView: {
       flex: 1,
       justifyContent: 'center',
@@ -39,7 +42,7 @@ const CalendarMenu = () => {
       height:'100%',
       width:'100%'
     },
-  });
+  }),[colors.paper, colors.paperShadow]);
   const {state:{selectedDate, arrayOfMedications}} = useApplicationContext();
   const [refillMedications, setRefillMedications] = useState<IMedication[]>(arrayOfMedications.filter(medication=>isSameDay(medication.next_refill as Date,selectedDate)));
   const [isRefillModalOpen, setIsRefillModalOpen] = useState(false);
@@ -57,7 +60,7 @@ const CalendarMenu = () => {
           <Text>
             {selectedDate && selectedDate.toDateString()}
           </Text>
-          <ScrollView>
+          <ScrollView style={{width:'90%'}} contentContainerStyle={{width:'100%'}}>
             {refillMedications.map(medication=>(
               <MedicationActions key={medication._id} actionType={'refill'} medicationName={medication.name} medication={medication} setOpenModel={setIsRefillModalOpen} setModalData={setModalData}/>
             ))}

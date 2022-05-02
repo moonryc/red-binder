@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTailwind } from 'tailwind-rn';
 import { useTheme } from '@react-navigation/native';
 import { CustomTheme } from '../../types';
@@ -19,9 +19,7 @@ export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>n
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const colors = useCustomTheme();
-
-
-  const styles = useMemo(()=>({
+  const styles = useMemo(()=>(StyleSheet.create({
     container: {
       display:'flex',
       justifyContent:'center',
@@ -42,7 +40,9 @@ export const StandardButton:React.FC<IStandardButton> = ({children,onPress=()=>n
       textAlign:'center',
     }
     //@ts-ignore
-  } as const),[colors.primaryDark, colors.primaryLight, colors.text, isPressed]) ;
+  })),[colors.primaryDark, colors.primaryLight, colors.text, isPressed]) ;
+
+
 
 
   return (

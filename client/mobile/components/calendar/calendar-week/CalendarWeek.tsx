@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from 'react-native';
+import { View,StyleSheet } from 'react-native';
 import CalendarDay from '../day/CalendarDay';
 import { ICalendarDay } from '../../../types/calendar';
 
@@ -9,7 +9,7 @@ interface props{
   daysInWeek:ICalendarDay[]
 }
 
-const styles= {
+const styles= StyleSheet.create({
   container:{
     display:'flex',
     flexDirection:'row',
@@ -18,12 +18,14 @@ const styles= {
     alignItems:'center',
     justifyContent:'space-around',
   }
-} as const;
+});
 
+/**
+ * Renders each week of the month 7 days each inside one view component, this is due React natives limited CSS
+ * @param daysInWeek
+ * @constructor
+ */
 const CalendarWeek:React.FC<props> = ({daysInWeek}) => {
-
-
-
   return (
     <View style={styles.container}>
       {daysInWeek.map((day,index)=>(

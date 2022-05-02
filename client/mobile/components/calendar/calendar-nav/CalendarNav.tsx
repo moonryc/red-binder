@@ -9,6 +9,12 @@ interface INavButton {
   onPress: Function;
 }
 
+/**
+ * The nav button for the Calendar
+ * @param onPress
+ * @param children
+ * @constructor
+ */
 const NavButton: React.FC<INavButton> = ({ onPress, children }) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const colors = useCustomTheme();
@@ -49,6 +55,14 @@ interface props {
 }
 
 
+/**
+ * Renders the navigation controller for the calendar
+ * @param previousMonth
+ * @param nextMonth
+ * @param month
+ * @param year
+ * @constructor
+ */
 const CalendarNav: React.FC<props> = ({ previousMonth, nextMonth, month, year }) => {
 
   const colors = useCustomTheme();
