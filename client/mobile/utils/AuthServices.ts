@@ -10,22 +10,14 @@ class AuthService{
     return decode(this.getToken() as string);
   }
 
-  // check if user's logged in
-  async isLoggedIn(){
-    // Checks if there is a saved token and it's still valid
-    const token = await this.getToken();
-    if(!token){
-      return false;
-    }
-    return !!token && !this.isTokenExpired(token); // handwaiving here
-  }
-
   // check if token is expired
   isTokenExpired(token: string){
     try {
       const decoded: { exp: Date } = decode(token);
-      const { exp } = decoded;
-      if (exp.getDate() < Date.now() / 1000) {
+      const { exp }:any = decoded;
+      const experation = exp as unknown as number;
+      const now:number = Date.now()/1000 as number;
+      if (exp < now) {
         return true;
       } else {
         return false;
@@ -34,6 +26,25 @@ class AuthService{
       return false;
     }
   }
+
+  // check if user's logged in
+  async isLoggedIn(){
+    // Checks if there is a saved token and it's still valid
+    const token = await this.getToken();
+    if(!token){
+      return false;
+    }
+    const isExpired = this.isTokenExpired(token);
+    console.log('token: ' + token);
+    console.log('isExpired: ' + isExpired);
+
+    if(token && !isExpired){
+      return true;
+    }
+    return false;
+  }
+
+
 
   async getToken(): Promise<string | null>{
     // Retrieves the user token from localStorage

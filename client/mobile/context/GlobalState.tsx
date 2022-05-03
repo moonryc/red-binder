@@ -54,19 +54,6 @@ export const ApplicationProvider = ({value=[],...props}) => {
 
   const {data:bindersData,error,loading,refetch}= useQuery(GET_ALL_BINDERS);
 
-  useEffect(() => {
-    if(!state.isLoggedIn){
-      AuthServices.isLoggedIn().then(isLoggedIn=>{
-        if(isLoggedIn){
-          refetch().then(r=>dispatch({type:TOGGLE_LOGIN}));
-        }
-      });
-    }
-    if(state.isLoggedIn){
-      refetch();
-    }
-  }, [dispatch, refetch, state.isLoggedIn]);
-
   //updates the global states that hold the array of all medication which is used for the calendar
   useUpdateArrayOfMedications(state.binders,dispatch);
   //Used To Fix some date oddities

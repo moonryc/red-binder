@@ -24,7 +24,7 @@ export const decodeJwtToken = (bearerJwtToken:string):false|{data:{_id:string,em
     //@ts-ignore
     return tokenDecoded;
   }catch (e) {
-    console.log('Invalid Token');
+    console.log(e);
     return false;
   }
 
